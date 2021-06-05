@@ -45,6 +45,8 @@ public class Character : MonoBehaviour
     private Vector3 input_direction;
     private Vector3 test;
     private Vector3 hit_normal;
+    private Vector3 orthogonal_wall_vector;
+    private int wall_direction;
     
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
@@ -57,7 +59,7 @@ public class Character : MonoBehaviour
       camera_pitch = Mathf.Clamp(camera_pitch,-90, 90);
 
       //set the camera rotation
-      FPCamera.localEulerAngles = Vector3.right * camera_pitch;
+      FPCamera.localEulerAngles = new Vector3(camera_pitch, 0, 0); 
 
       //apply this rotation with the sensitivity modifier 
       transform.Rotate(Vector3.up * mouse_delta.x * mouse_sensitivity);
@@ -86,19 +88,41 @@ public class Character : MonoBehaviour
     }
 
     public void WallRun(){
-      float vertical = Input.GetAxisRaw("Vertical");
-      Vector3 along_wall = transform.TransformDirection(Vector3.forward);
-      hit_normal = Vector3.Cross(character_collisions.HitNormal(), Vector3.up);
-      int dir_mod = Vector3.Dot(along_wall, hit_normal) < 0 ? -1 : 1; 
-      print(dir_mod);
-      velocity = hit_normal * dir_mod * wall_speed_mod;
+      if(velocity.y > 0){
+        //Keep upward velocity if it positive
+        float vertical_velocity = velocity.y;
+        Vector3 horizontal_velocity = Vector3.ProjectOnPlane(orthogonal_wall_vector * wall_direction * wall_speed_mod, Vector3.up);
+        velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
+      } else{
+        //make the velocity equal the correct direction and add the wall speed modifier 
+        velocity = orthogonal_wall_vector * wall_direction * wall_speed_mod;
+      }     
+
+      // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wall_run_gravity * Time.fixedDeltaTime;
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit) {
-        hit_normal = hit.normal;
+    public void SetWallRunValues(){      
+      //get current current forward direction for character
+      Vector3 along_wall = transform.TransformDirection(Vector3.forward);
+
+      //get the wall normal, needs to be set for jumping
+      hit_normal = character_collisions.HitNormal();
+
+      //get the orthogonal vector from the wall compared to UP 
+      orthogonal_wall_vector = Vector3.Cross(hit_normal, Vector3.up);
+      
+      //use the dot product to determine which direct the player is facing on the wall
+      wall_direction = Vector3.Dot(along_wall, orthogonal_wall_vector) < 0 ? -1 : 1; 
     }
 
+    public void WallJump(){
+      // start by canceling out the vertical component of our velocity
+      velocity = new Vector3(velocity.x, 0f, velocity.z);
+      
+      // then, add the jumpSpeed value in the wall direction
+      velocity += (hit_normal + Vector3.up) * jump_force;
+    }
     public void GroundJump(){
       // start by canceling out the vertical component of our velocity
       velocity = new Vector3(velocity.x, 0f, velocity.z);
