@@ -88,9 +88,11 @@ public class Character : MonoBehaviour
     public void WallRun(){
       float vertical = Input.GetAxisRaw("Vertical");
       Vector3 along_wall = transform.TransformDirection(Vector3.forward);
-      velocity = along_wall * vertical * wall_speed_mod;
+      hit_normal = Vector3.Cross(character_collisions.HitNormal(), Vector3.up);
+      int dir_mod = Vector3.Dot(along_wall, hit_normal) < 0 ? -1 : 1; 
+      print(dir_mod);
+      velocity = hit_normal * dir_mod * wall_speed_mod;
       velocity += Vector3.down * wall_run_gravity * Time.fixedDeltaTime;
-      print(hit_normal);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {

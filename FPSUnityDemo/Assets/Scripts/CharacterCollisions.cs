@@ -10,6 +10,7 @@ public class CharacterCollisions : MonoBehaviour
     public Vector3 last_wall_normal;
     Vector3[] directions;
     RaycastHit[] hits;
+    private Vector3 last_normal;
     [SerializeField]
     private float max_wall_dist;
     void Start()
@@ -51,8 +52,17 @@ public class CharacterCollisions : MonoBehaviour
             on_wall = true;
             last_wall_position = hits[0].point;
             last_wall_normal = hits[0].normal;
+            last_normal = hits[0].normal;
         } else {
             on_wall = false;
         }
+        // for(int i=0; i<hits.Length; i++)
+        // {
+        //     print(hits[i].normal + " | " + i);
+        // }
+    }
+
+    public Vector3 HitNormal(){
+        return last_normal;
     }
 }
