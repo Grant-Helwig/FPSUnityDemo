@@ -26,6 +26,8 @@ public class FallingState : State
         base.LogicUpdate();
         if(character.controller.isGrounded){
             state_machine.ChangeState(character.running_state);
+        } else if(character.character_collisions.on_wall && character.can_wall_run){
+            state_machine.ChangeState(character.wall_running_state);
         }
     }
     public override void PhysicsUpdate()

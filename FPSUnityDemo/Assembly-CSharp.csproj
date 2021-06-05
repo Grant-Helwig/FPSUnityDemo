@@ -47,6 +47,7 @@
      <Compile Include="Assets\Scripts\States\RunningState.cs" />
      <Compile Include="Assets\Scripts\States\FallingState.cs" />
      <Compile Include="Assets\Scripts\States\WallRunningState.cs" />
+     <Compile Include="Assets\Scripts\CharacterCollisions.cs" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Glass_Global.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Object.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Global.shader" />

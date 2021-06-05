@@ -8,6 +8,7 @@ public class Character : MonoBehaviour
     public State falling_state;
     public State wall_running_state;
     public StateMachine movement_machine;
+    public CharacterCollisions character_collisions;
 
     [SerializeField]
     private Transform FPCamera = null;
@@ -29,51 +30,22 @@ public class Character : MonoBehaviour
     [SerializeField]
     private float acc_speed = 1.0f;
     [SerializeField]
+    private float wall_speed_mod = 1.0f;
+    [SerializeField]
+    private float wall_run_gravity = 1.0f;
+    [SerializeField]
     public CharacterController controller = null;
     [SerializeField]
-    private bool lock_cursor;
+    public bool can_wall_run = true;
+    public bool lock_cursor;
     
     private float camera_pitch = 0;
 
-    private Vector3 velocity;
+    public Vector3 velocity;
     private Vector3 input_direction;
     private Vector3 test;
-    void Start()
-    {
-      controller = GetComponent<CharacterController>();
-      
-      // initialize all state machine variables
-      movement_machine = new StateMachine();
-      running_state = new RunningState(this, movement_machine);
-      falling_state = new FallingState(this, movement_machine);
-      wall_running_state = new WallRunningState(this, movement_machine);
-
-      //default to the failling state 
-      movement_machine.Initialize(falling_state);
-
-      //lock cursor to screen and hide cursor
-      if(lock_cursor){
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-      }
-    }
-
-    void Update()
-    {
-      UpdateMouseLook();
-      movement_machine.cur_state.HandleInput();
-      movement_machine.cur_state.LogicUpdate();
-    }
-
-    void FixedUpdate() {
-      float x = Input.GetAxisRaw("Horizontal");
-      float z = Input.GetAxisRaw("Vertical");
-      
-      input_direction = transform.right * x + transform.forward * z;
-      movement_machine.cur_state.PhysicsUpdate();
-      controller.Move(velocity * Time.fixedDeltaTime);
-    }
-
+    private Vector3 hit_normal;
+    
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -113,11 +85,59 @@ public class Character : MonoBehaviour
       velocity += Vector3.down * gravity * Time.fixedDeltaTime;
     }
 
+    public void WallRun(){
+      float vertical = Input.GetAxisRaw("Vertical");
+      Vector3 along_wall = transform.TransformDirection(Vector3.forward);
+      velocity = along_wall * vertical * wall_speed_mod;
+      velocity += Vector3.down * wall_run_gravity * Time.fixedDeltaTime;
+      print(hit_normal);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        hit_normal = hit.normal;
+    }
+
     public void GroundJump(){
       // start by canceling out the vertical component of our velocity
       velocity = new Vector3(velocity.x, 0f, velocity.z);
       
       // then, add the jumpSpeed value upwards
       velocity += Vector3.up * jump_force;
+    }
+
+    void Start()
+    {
+      controller = GetComponent<CharacterController>();
+      character_collisions = GetComponent<CharacterCollisions>();
+      // initialize all state machine variables
+      movement_machine = new StateMachine();
+      running_state = new RunningState(this, movement_machine);
+      falling_state = new FallingState(this, movement_machine);
+      wall_running_state = new WallRunningState(this, movement_machine);
+
+      //default to the failling state 
+      movement_machine.Initialize(falling_state);
+
+      //lock cursor to screen and hide cursor
+      if(lock_cursor){
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+      }
+    }
+
+    void Update()
+    {
+      UpdateMouseLook();
+      movement_machine.cur_state.HandleInput();
+      movement_machine.cur_state.LogicUpdate();
+    }
+
+    void FixedUpdate() {
+      float x = Input.GetAxisRaw("Horizontal");
+      float z = Input.GetAxisRaw("Vertical");
+      
+      input_direction = transform.right * x + transform.forward * z;
+      movement_machine.cur_state.PhysicsUpdate();
+      controller.Move(velocity * Time.fixedDeltaTime);
     }
 }

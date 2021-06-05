@@ -24,9 +24,16 @@ public class WallRunningState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        if(character.controller.isGrounded){
+            state_machine.ChangeState(character.running_state);
+        } else if(!character.character_collisions.on_wall || Input.GetAxisRaw("Vertical") <= 0){
+            character.can_wall_run = false; 
+            state_machine.ChangeState(character.falling_state);
+        } 
     }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        character.WallRun();
     }
 }

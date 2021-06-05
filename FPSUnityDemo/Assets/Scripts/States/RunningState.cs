@@ -11,6 +11,7 @@ public class RunningState : State
     public override void Enter()
     {
         base.Enter();
+        character.can_wall_run = true;
     }
     public override void Exit()
     {
