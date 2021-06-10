@@ -27,11 +27,11 @@ public class WallRunningState : State
         base.LogicUpdate();
         if(character.controller.isGrounded){
             state_machine.ChangeState(character.running_state);
-        } else if(Input.GetButtonDown("Jump")){
+        } else if(character.can_jump){
             character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
-        }else if(!character.character_collisions.on_wall || Input.GetAxisRaw("Vertical") <= 0){
+        }else if(!character.character_collisions.on_wall ||character.input_direction.x <= 0){
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } 
@@ -39,6 +39,9 @@ public class WallRunningState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        if(character.current_camera_roll != character.max_angle_roll){
+            character.SetCameraAngle(-character.wall_direction * character.max_angle_roll);
+        }
         character.WallRun();
     }
 }

@@ -6,10 +6,14 @@ public class Timer : MonoBehaviour
 {
     public float wait_time { get; private set; }
     public bool is_active { get; private set; }
+    private Coroutine wait_routine;
     
     public void SetTimer(float wait_time){
         this.wait_time = wait_time; 
     }
+    // public Timer(float wait_time){
+    //     this.wait_time = wait_time;
+    // }
     
     IEnumerator TimerCoroutine()
     {
@@ -18,19 +22,16 @@ public class Timer : MonoBehaviour
         is_active = false; 
     }
 
-    public void StartTimer(){
+    public void Start(){
         if(!is_active){
-            StartCoroutine(TimerCoroutine());
+            wait_routine = StartCoroutine(TimerCoroutine());
         }
     }
-    void Start()
-    {
-        is_active = false;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Stop(){
+        if(wait_routine != null){
+            StopCoroutine(wait_routine);
+            is_active = false;
+        }
     }
 }
