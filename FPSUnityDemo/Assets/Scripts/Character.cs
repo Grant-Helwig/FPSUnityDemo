@@ -42,6 +42,8 @@ public class Character : MonoBehaviour
     [SerializeField]
     private float max_slide_speed = 1.0f;
     [SerializeField]
+    private float max_climb_speed = 1.0f;
+    [SerializeField]
     private float base_slide_speed = 1.0f;
     [SerializeField]
     private float slide_acc_speed = 1.0f;
@@ -145,6 +147,12 @@ public class Character : MonoBehaviour
 
       // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wall_run_gravity * Time.fixedDeltaTime;
+    }
+
+    public void WallClimb(){
+       Vector3 target_velocity = Vector3.up * max_climb_speed;
+
+      velocity = Vector3.Lerp(velocity, target_velocity, acc_speed * Time.fixedDeltaTime);
     }
 
     public void SlideMovement(){

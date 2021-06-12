@@ -16694,11 +16694,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   on_wall: 0
+  facing_wall: 0
   on_ground: 0
   ground_slope: {x: 0, y: 0, z: 0}
   last_wall_position: {x: 0, y: 0, z: 0}
   last_wall_normal: {x: 0, y: 0, z: 0}
+  last_facing_wall_position: {x: 0, y: 0, z: 0}
+  last_facing_wall_normal: {x: 0, y: 0, z: 0}
   max_wall_dist: 1
+  max_facing_wall_dist: 1.5
 --- !u!114 &1399740254
 MonoBehaviour:
   m_ObjectHideFlags: 0
