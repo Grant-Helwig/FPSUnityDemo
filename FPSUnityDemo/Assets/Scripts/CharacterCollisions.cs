@@ -50,7 +50,7 @@ public class CharacterCollisions : MonoBehaviour
     {
         on_wall = WallCheck();
         on_ground = GroundCheck();
-        facing_wall = FacingWallCheck();
+        //facing_wall = FacingWallCheck();
     }
 
     public Vector3 WallHitNormal(){
@@ -79,7 +79,12 @@ public class CharacterCollisions : MonoBehaviour
         {
             last_wall_position = wall_hits[0].point;
             last_wall_normal = wall_hits[0].normal;
-            return true;
+
+            Vector3 along_wall = transform.TransformDirection(Vector3.forward);
+            Vector3 orthogonal_wall_vector = Vector3.Cross(last_wall_normal, Vector3.up);
+            facing_wall = Vector3.Dot(along_wall, orthogonal_wall_vector) < .35f && Vector3.Dot(along_wall, orthogonal_wall_vector) > -.35f  ? true : false;
+
+            return true && !SlopeLimitCheck(last_wall_normal);
         } else {
             return false;
         }

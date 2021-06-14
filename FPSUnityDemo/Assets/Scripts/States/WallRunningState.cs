@@ -28,10 +28,10 @@ public class WallRunningState : State
         if(character.controller.isGrounded){
             state_machine.ChangeState(character.running_state);
         } else if(character.can_jump){
-            character.can_wall_run = false; 
+            //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
-        }else if(!character.character_collisions.on_wall ||character.input_direction.x <= 0){
+        }else if(!character.character_collisions.on_wall ||character.input_handler.move_input.z < .5f){
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } 

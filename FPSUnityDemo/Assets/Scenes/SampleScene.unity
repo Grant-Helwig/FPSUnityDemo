@@ -16638,6 +16638,7 @@ MonoBehaviour:
   wall_speed_mod: 12
   wall_run_gravity: 20
   max_slide_speed: 18
+  max_climb_speed: 7
   base_slide_speed: 13
   slide_acc_speed: 1
   max_angle_roll: 30

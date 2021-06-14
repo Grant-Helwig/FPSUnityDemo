@@ -9,7 +9,7 @@ public class Character : MonoBehaviour
     public State falling_state;
     public State wall_running_state;
     public State sliding_state;
-    public State crouching_state;
+    public State wall_climbing_state;
     public StateMachine movement_machine;
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
@@ -74,6 +74,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private float slide_time;
     public Timer jump_cooldown_timer;
+    public Timer wall_jump_cooldown_timer;
     [SerializeField]
     private float jump_cooldown_time;
     public Timer jump_buffer_timer;
@@ -150,8 +151,8 @@ public class Character : MonoBehaviour
     }
 
     public void WallClimb(){
-       Vector3 target_velocity = Vector3.up * max_climb_speed;
-
+      //Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * max_climb_speed;
+      Vector3 target_velocity =  Vector3.up * max_climb_speed;
       velocity = Vector3.Lerp(velocity, target_velocity, acc_speed * Time.fixedDeltaTime);
     }
 
@@ -238,8 +239,16 @@ public class Character : MonoBehaviour
       wall_direction = Vector3.Dot(along_wall, orthogonal_wall_vector) < 0 ? -1 : 1; 
     }
 
+    public void SetWallClimbValues(){    
+      //get the wall normal, needs to be set for jumping
+      wall_hit_normal = character_collisions.WallHitNormal();
+
+      //get the orthogonal vector from the wall compared to UP 
+      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
+    }
+
     public void WallJump(){
-      jump_cooldown_timer.Start();
+      wall_jump_cooldown_timer.Start();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
       velocity = new Vector3(velocity.x, 0f, velocity.z);
@@ -320,7 +329,7 @@ public class Character : MonoBehaviour
       running_state = new RunningState(this, movement_machine);
       falling_state = new FallingState(this, movement_machine);
       sliding_state = new SlidingState(this, movement_machine);
-      crouching_state = new CrouchingState(this, movement_machine);
+      wall_climbing_state = new WallClimbingState(this, movement_machine);
       wall_running_state = new WallRunningState(this, movement_machine);
 
       //initialize timers to set values
@@ -330,6 +339,8 @@ public class Character : MonoBehaviour
       jump_buffer_timer.SetTimer(jump_buffer_time);
       jump_cooldown_timer = gameObject.AddComponent<Timer>();
       jump_cooldown_timer.SetTimer(jump_cooldown_time);
+      wall_jump_cooldown_timer = gameObject.AddComponent<Timer>();
+      wall_jump_cooldown_timer.SetTimer(jump_cooldown_time);
       coyote_timer = gameObject.AddComponent<Timer>();
       coyote_timer.SetTimer(coyote_time);
       
