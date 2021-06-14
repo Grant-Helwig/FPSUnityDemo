@@ -16,6 +16,7 @@ public class WallClimbingState : State
     public override void Exit()
     {
         base.Exit();
+        character.wall_climb_duration_timer.Stop();
     }
 
     public override void HandleInput()
@@ -27,8 +28,11 @@ public class WallClimbingState : State
         base.LogicUpdate();
         if(character.controller.isGrounded){
             state_machine.ChangeState(character.running_state);
-        } else if(character.can_jump){
+        } else if(!character.wall_climb_duration_timer.is_active){
             character.can_wall_run = false; 
+            state_machine.ChangeState(character.falling_state);
+        } else if(character.can_jump){
+            //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
         }else if(!character.character_collisions.facing_wall ||character.input_handler.move_input.z < .5f){

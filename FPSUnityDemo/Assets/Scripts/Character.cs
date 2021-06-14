@@ -51,6 +51,7 @@ public class Character : MonoBehaviour
     public float max_angle_roll = 1.0f;
     [SerializeField]
     private float angle_roll_speed = 1.0f;
+    public float fixed_angle_roll_duration = 1.0f;
     [SerializeField]
     private float crouching_sharpness = 10f;
     [SerializeField]
@@ -83,6 +84,12 @@ public class Character : MonoBehaviour
     public Timer coyote_timer; 
     [SerializeField]
     private float coyote_time;
+    public Timer wall_run_duration_timer; 
+    [SerializeField]
+    private float  wall_run_duration;
+    public Timer wall_climb_duration_timer; 
+    [SerializeField]
+    private float  wall_climb_duration;
     public float standing_height;
     public float crouching_height;
     private bool slide_timer_set = false;
@@ -226,6 +233,7 @@ public class Character : MonoBehaviour
     }
 
     public void SetWallRunValues(){      
+      wall_run_duration_timer.Start();
       //get current current forward direction for character
       Vector3 along_wall = transform.TransformDirection(Vector3.forward);
 
@@ -240,6 +248,7 @@ public class Character : MonoBehaviour
     }
 
     public void SetWallClimbValues(){    
+      wall_climb_duration_timer.Start();
       //get the wall normal, needs to be set for jumping
       wall_hit_normal = character_collisions.WallHitNormal();
 
@@ -288,10 +297,16 @@ public class Character : MonoBehaviour
       }
     }
 
-    public void SetCameraAngle(float target_angle){
+    public float SetCameraAngle(float target_angle){
       float camera_angle = FPCamera.eulerAngles.z;
 
       current_camera_roll = Mathf.LerpAngle(camera_angle,target_angle, angle_roll_speed * Time.fixedDeltaTime);
+      return FPCamera.eulerAngles.z;
+    }
+
+    public void SetCameraAngleFixed(float target_angle, float start_angle, float duration){
+
+      current_camera_roll = Mathf.LerpAngle(start_angle,target_angle, duration);
     }
 
     public bool AtHeight(float height){
@@ -343,6 +358,10 @@ public class Character : MonoBehaviour
       wall_jump_cooldown_timer.SetTimer(jump_cooldown_time);
       coyote_timer = gameObject.AddComponent<Timer>();
       coyote_timer.SetTimer(coyote_time);
+      wall_run_duration_timer = gameObject.AddComponent<Timer>();
+      wall_run_duration_timer.SetTimer(wall_run_duration);
+      wall_climb_duration_timer = gameObject.AddComponent<Timer>();
+      wall_climb_duration_timer.SetTimer(wall_climb_duration);
       
       //default to the failling state 
       movement_machine.Initialize(falling_state);

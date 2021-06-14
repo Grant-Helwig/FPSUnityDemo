@@ -16643,6 +16643,7 @@ MonoBehaviour:
   slide_acc_speed: 1
   max_angle_roll: 30
   angle_roll_speed: 5
+  fixed_angle_roll_duration: 3
   crouching_sharpness: 10
   controller: {fileID: 0}
   can_wall_run: 1
@@ -16654,11 +16655,16 @@ MonoBehaviour:
   slide_timer: {fileID: 0}
   slide_time: 0.5
   jump_cooldown_timer: {fileID: 0}
+  wall_jump_cooldown_timer: {fileID: 0}
   jump_cooldown_time: 0.5
   jump_buffer_timer: {fileID: 0}
   jump_buffer_time: 0.5
   coyote_timer: {fileID: 0}
   coyote_time: 0.5
+  wall_run_duration_timer: {fileID: 0}
+  wall_run_duration: 4
+  wall_climb_duration_timer: {fileID: 0}
+  wall_climb_duration: 3
   standing_height: 0
   crouching_height: 0
   can_jump: 0
