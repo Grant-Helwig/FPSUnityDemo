@@ -12,6 +12,8 @@ public class RunningState : State
     {
         base.Enter();
         character.can_wall_run = true;
+        character.SnapToGround();
+        character.SetDebugText("Running");
     }
     public override void Exit()
     {
@@ -29,7 +31,7 @@ public class RunningState : State
     {
         base.LogicUpdate();
         if(!character.character_collisions.on_ground){
-            character.coyote_timer.Start();
+            character.coyoteTimer.StartTimer();
             state_machine.ChangeState(character.falling_state);
         } else if(character.can_jump){
             if(character.character_collisions.on_wall){

@@ -2,63 +2,91 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.UI;
 
+[SelectionBase]
 public class Character : MonoBehaviour
 {
+    [Header("General Variables")]
+    [SerializeField]
+    [Tooltip("General mouse sensitivity")]
+    private float mouseSensitivity = 1.0f;
+    [SerializeField]
+    [Tooltip("Ratio of camera height compared to the character collider")]
+    [Range(0,1)]
+    private float cameraHeightRatio = .9f;
+    [Header("Running Variables")]
+    [SerializeField]
+    private float maxRunSpeed = 1.0f;
+    [SerializeField]
+    private float runAccSpeed = 1.0f;
+    [SerializeField]
+    private float jumpForce = 1.0f;
+    [Header("Sliding Variables")]
+    [SerializeField]
+    private float maxCrouchSpeed = 1.0f;
+    [SerializeField]
+    private float crouchAccSpeed = 1.0f;
+    [SerializeField]
+    private float crouchSharpness = 10f;
+    [SerializeField]
+    private float maxSlideSpeed = 1.0f;
+    [SerializeField]
+    private float minSlideSpeed = 1.0f;
+    [SerializeField]
+    private float slideAccSpeed = 1.0f;
+    
+    [Header("Air Movement Variables")]
+    [SerializeField]
+    private float gravity = 1.0f;
+    [SerializeField]
+    private float maxAirSpeed = 1.0f;
+    [SerializeField]
+    private float airAcc = 1.0f;
+    
+    [Header("Wall Movement Variables")]
+    [SerializeField]
+    private float wallSpeedMod = 1.0f;
+    [SerializeField]
+    private float wallRunGravity = 1.0f;
+    
+    [SerializeField]
+    private float maxClimbSpeed = 1.0f;
+    [SerializeField]
+    private float angleRollSpeed = 1.0f;
+    public float fixedAngleRollDuration = 1.0f;
+    [Header("Timer Variables")]
+    [SerializeField]
+    private float slideTime;
+    [SerializeField]
+    private float jumpCooldownTime;
+    [SerializeField]
+    private float jumpBufferTime;
+    [SerializeField]
+    private float coyoteTime;
+    [SerializeField]
+    private float  wallRunDuration;
+    [SerializeField]
+    private float  wallClimbDuration;
     public State running_state;
     public State falling_state;
     public State wall_running_state;
     public State sliding_state;
     public State wall_climbing_state;
     public StateMachine movement_machine;
+    [Header("Other Variables")]
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
 
     [SerializeField]
     private Transform FPCamera = null;
-    [SerializeField]
-    private float mouse_sensitivity = 1.0f;
- 
-    [SerializeField]
-    private float gravity = 1.0f;
-    [SerializeField]
-    private float air_acc = 1.0f;
-    [SerializeField]
-    private float max_air_speed = 1.0f;
-    [SerializeField]
-    private float jump_force = 1.0f;
-    [SerializeField]
-    private float max_speed = 1.0f;
-    [SerializeField]
-    private float acc_speed = 1.0f;
-    [SerializeField]
-    private float max_crouch_speed = 1.0f;
-    [SerializeField]
-    private float crouch_acc_speed = 1.0f;
-    [SerializeField]
-    private float wall_speed_mod = 1.0f;
-    [SerializeField]
-    private float wall_run_gravity = 1.0f;
-    [SerializeField]
-    private float max_slide_speed = 1.0f;
-    [SerializeField]
-    private float max_climb_speed = 1.0f;
-    [SerializeField]
-    private float base_slide_speed = 1.0f;
-    [SerializeField]
-    private float slide_acc_speed = 1.0f;
-    
+
     public float max_angle_roll = 1.0f;
-    [SerializeField]
-    private float angle_roll_speed = 1.0f;
-    public float fixed_angle_roll_duration = 1.0f;
-    [SerializeField]
-    private float crouching_sharpness = 10f;
+    
     [SerializeField]
     public CharacterController controller = null;
     public bool can_wall_run = true;
-    [SerializeField]
-    private float camera_height_ratio = .9f;
+    
     public bool lock_cursor;
     
     private float camera_pitch = 0;
@@ -71,38 +99,36 @@ public class Character : MonoBehaviour
     private float speed_mod = 1.0f;
     private float last_slide_speed;
     private Vector3 last_slide_direction;
-    public Timer slide_timer;
-    [SerializeField]
-    private float slide_time;
-    public Timer jump_cooldown_timer;
-    public Timer wall_jump_cooldown_timer;
-    [SerializeField]
-    private float jump_cooldown_time;
-    public Timer jump_buffer_timer;
-    [SerializeField]
-    private float jump_buffer_time;
-    public Timer coyote_timer; 
-    [SerializeField]
-    private float coyote_time;
-    public Timer wall_run_duration_timer; 
-    [SerializeField]
-    private float  wall_run_duration;
-    public Timer wall_climb_duration_timer; 
-    [SerializeField]
-    private float  wall_climb_duration;
+    public Timer slideTimer;
+    
+    public Timer jumpCooldownTimer;
+    public Timer wallJumpCooldownTimer;
+    
+    public Timer jumpBufferTimer;
+    
+    public Timer coyoteTimer; 
+    
+    public Timer wallRunDurationTimer; 
+    
+    public Timer wallClimbDurationTimer; 
+    
     public float standing_height;
     public float crouching_height;
-    private bool slide_timer_set = false;
+    private bool slideTimerSet = false;
     public bool can_jump;
+    private float last_falling_speed;
     public float current_camera_roll;
-    
+    [SerializeField]
+    public Text debug_text;
+    [SerializeField]
+    public Text debug_speed;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
       Vector2 mouse_delta = input_handler.mouse_delta;
 
       //set the y rotation for the camera, user the mouse sensitivity 
-      camera_pitch -= mouse_delta.y * mouse_sensitivity;
+      camera_pitch -= mouse_delta.y * mouseSensitivity;
 
       //clamp the rotation
       camera_pitch = Mathf.Clamp(camera_pitch,-90, 90);
@@ -111,7 +137,7 @@ public class Character : MonoBehaviour
       FPCamera.localEulerAngles = new Vector3(camera_pitch, 0, current_camera_roll); 
 
       //apply this rotation with the sensitivity modifier 
-      transform.Rotate(Vector3.up * mouse_delta.x * mouse_sensitivity);
+      transform.Rotate(Vector3.up * mouse_delta.x * mouseSensitivity);
     }
 
     public void GroundMovement(){
@@ -121,46 +147,56 @@ public class Character : MonoBehaviour
       //take slop into account
       Vector3 slope_direction = Vector3.ProjectOnPlane(input_direction, character_collisions.ground_slope);
       //Get the speed you want to get to 
-      Vector3 target_velocity = slope_direction * max_speed * speed_mod;
+      Vector3 target_velocity = slope_direction * maxRunSpeed * speed_mod;
       //Smoothly transition to that velocity 
-      velocity = Vector3.Lerp(velocity, target_velocity, acc_speed * Time.fixedDeltaTime);
+      velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
     }
 
     public void AirMovement(){
       speed_mod = input_handler.is_sprinting ? 1.3f : 1f;
       
       //Add the air acceleration to the velocity
-      velocity += input_direction * air_acc * Time.fixedDeltaTime;
+      velocity += input_direction * airAcc * Time.fixedDeltaTime;
 
       //clamp sideways velocity, keep upward velocity
       float vertical_velocity = velocity.y;
       Vector3 horizontal_velocity = Vector3.ProjectOnPlane(velocity, Vector3.up);
-      horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, max_air_speed * speed_mod);
+      float max_air_velocity = Mathf.Min(last_falling_speed,maxAirSpeed);
+      max_air_velocity = Mathf.Max(max_air_velocity, maxRunSpeed);
+      horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, max_air_velocity);
       velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
 
       // now add gravity acceleration
       velocity += Vector3.down * gravity * Time.fixedDeltaTime;
     }
+    public void SetAirValues(float speed){
+      last_falling_speed = speed;
+    }
 
     public void WallRun(){
+      //get the wall normal, needs to be set for jumping
+      wall_hit_normal = character_collisions.WallHitNormal();
+      //get the orthogonal vector from the wall compared to UP 
+      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
+
       if(velocity.y > 0){
         //Keep upward velocity if it positive
         float vertical_velocity = velocity.y;
-        Vector3 horizontal_velocity = Vector3.ProjectOnPlane(orthogonal_wall_vector * wall_direction * wall_speed_mod, Vector3.up);
+        Vector3 horizontal_velocity = Vector3.ProjectOnPlane(orthogonal_wall_vector * wall_direction * wallSpeedMod, Vector3.up);
         velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
       } else{
         //make the velocity equal the correct direction and add the wall speed modifier 
-        velocity = orthogonal_wall_vector * wall_direction * wall_speed_mod;
+        velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
       }     
 
       // now apply gravity so there is a downward arc 
-      velocity += Vector3.down * wall_run_gravity * Time.fixedDeltaTime;
+      velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
     }
 
     public void WallClimb(){
-      //Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * max_climb_speed;
-      Vector3 target_velocity =  Vector3.up * max_climb_speed;
-      velocity = Vector3.Lerp(velocity, target_velocity, acc_speed * Time.fixedDeltaTime);
+      //Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * maxClimbSpeed;
+      Vector3 target_velocity =  Vector3.up * maxClimbSpeed;
+      velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
     }
 
     public void SlideMovement(){
@@ -175,16 +211,16 @@ public class Character : MonoBehaviour
       if(Mathf.Approximately(current_slope, 0)){
         slide_direction = last_slide_direction;
         slide_speed = last_slide_speed;
-        if(!slide_timer_set){
-          slide_timer.Start();
-          slide_timer_set = true; 
+        if(!slideTimerSet){
+          slideTimer.StartTimer();
+          slideTimerSet = true; 
         }
-        if(!slide_timer.is_active){
+        if(!slideTimer.is_active){
           slide_speed = 1f;
         }
       } else {
-        if(slide_timer_set){
-          slide_timer_set = false; 
+        if(slideTimerSet){
+          slideTimerSet = false; 
         }
         // parallel to ground
         Vector3 ground_orthogonal = Vector3.Cross(transform.up, character_collisions.ground_slope);
@@ -193,8 +229,8 @@ public class Character : MonoBehaviour
         //parallel to ground with current transform forward 
         slide_direction = Vector3.ProjectOnPlane(velocity.normalized + slope_orthogonal.normalized, character_collisions.ground_slope).normalized; 
 
-        slide_speed = (1 + (current_slope / controller.slopeLimit)) * base_slide_speed;
-        slide_speed = Mathf.Min(slide_speed, max_slide_speed);
+        slide_speed = (1 + (current_slope / controller.slopeLimit)) * minSlideSpeed;
+        slide_speed = Mathf.Min(slide_speed, maxSlideSpeed);
         //slide_speed =  (1f - character_collisions.ground_slope.y) * );
         last_slide_direction = slide_direction;
         last_slide_speed = slide_speed; 
@@ -205,17 +241,17 @@ public class Character : MonoBehaviour
 
       
       // perform a crouch if your current velocity is less than half your run speed along with your target velocity 
-      if(velocity.magnitude <= max_crouch_speed 
-      && target_velocity.magnitude <= max_crouch_speed
-      && !slide_timer.is_active){
+      if(velocity.magnitude <= maxCrouchSpeed 
+      && target_velocity.magnitude <= maxCrouchSpeed
+      && !slideTimer.is_active){
         //take slope into account
         Vector3 slope_direction = Vector3.ProjectOnPlane(input_direction, character_collisions.ground_slope);
         //Get the speed you want to get to 
-        Vector3 crouch_velocity = slope_direction * max_crouch_speed * speed_mod;
+        Vector3 crouch_velocity = slope_direction * maxCrouchSpeed * speed_mod;
         //Smoothly transition to that velocity 
-        velocity = Vector3.Lerp(velocity, crouch_velocity, crouch_acc_speed * Time.fixedDeltaTime);
+        velocity = Vector3.Lerp(velocity, crouch_velocity, crouchAccSpeed * Time.fixedDeltaTime);
       }  else {
-        velocity = Vector3.Lerp(velocity, target_velocity, slide_acc_speed * Time.fixedDeltaTime);
+        velocity = Vector3.Lerp(velocity, target_velocity, slideAccSpeed * Time.fixedDeltaTime);
       }
     }
 
@@ -225,15 +261,15 @@ public class Character : MonoBehaviour
     }
 
     public bool CrouchThreshold(){
-      return velocity.magnitude <= max_crouch_speed;
+      return velocity.magnitude <= maxCrouchSpeed;
     }
     public void ResetSlideTimer(){
-      slide_timer_set = false;
-      slide_timer.Stop();
+      slideTimerSet = false;
+      slideTimer.StopTimer();
     }
 
     public void SetWallRunValues(){      
-      wall_run_duration_timer.Start();
+      wallRunDurationTimer.StartTimer();
       //get current current forward direction for character
       Vector3 along_wall = transform.TransformDirection(Vector3.forward);
 
@@ -248,7 +284,7 @@ public class Character : MonoBehaviour
     }
 
     public void SetWallClimbValues(){    
-      wall_climb_duration_timer.Start();
+      wallClimbDurationTimer.StartTimer();
       //get the wall normal, needs to be set for jumping
       wall_hit_normal = character_collisions.WallHitNormal();
 
@@ -257,50 +293,50 @@ public class Character : MonoBehaviour
     }
 
     public void WallJump(){
-      wall_jump_cooldown_timer.Start();
+      wallJumpCooldownTimer.StartTimer();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
       velocity = new Vector3(velocity.x, 0f, velocity.z);
       
       // then, add the jumpSpeed value in the wall direction
-      velocity += (wall_hit_normal + Vector3.up) * jump_force;
+      velocity += (wall_hit_normal + Vector3.up) * jumpForce;
     }
     public void GroundJump(){
-      jump_cooldown_timer.Start();
+      jumpCooldownTimer.StartTimer();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
       //velocity = new Vector3(velocity.x, 0f, velocity.z);
       velocity = Vector3.ProjectOnPlane(new Vector3(velocity.x, 0f, velocity.z), character_collisions.ground_slope);
       // then, add the jumpSpeed value upwards
-      velocity += character_collisions.ground_slope * jump_force;
+      velocity += character_collisions.ground_slope * jumpForce;
     }
 
     public void GroundWallJump(){
-      jump_cooldown_timer.Start();
+      jumpCooldownTimer.StartTimer();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
       //velocity = new Vector3(velocity.x, 0f, velocity.z);
       velocity = Vector3.ProjectOnPlane(new Vector3(velocity.x, 0f, velocity.z), Vector3.Cross(character_collisions.WallHitNormal(), Vector3.up));
       // then, add the jumpSpeed value upwards
-      velocity += character_collisions.ground_slope * jump_force;
+      velocity += character_collisions.ground_slope * jumpForce;
     }
 
     public void SetCharacterHeight(bool force, float height){
       if(force){
         controller.height = height;
         controller.center = Vector3.up * height * .5f;
-        FPCamera.transform.localPosition = Vector3.up * height * camera_height_ratio;
+        FPCamera.transform.localPosition = Vector3.up * height * cameraHeightRatio;
       } else {
-        controller.height = Mathf.Lerp(controller.height, height, crouching_sharpness * Time.fixedDeltaTime);
+        controller.height = Mathf.Lerp(controller.height, height, crouchSharpness * Time.fixedDeltaTime);
         controller.center = Vector3.up * height * .5f;
-        FPCamera.transform.localPosition = Vector3.Lerp(FPCamera.transform.localPosition, Vector3.up * height * camera_height_ratio, crouching_sharpness * Time.fixedDeltaTime);
+        FPCamera.transform.localPosition = Vector3.Lerp(FPCamera.transform.localPosition, Vector3.up * height * cameraHeightRatio, crouchSharpness * Time.fixedDeltaTime);
       }
     }
 
     public float SetCameraAngle(float target_angle){
       float camera_angle = FPCamera.eulerAngles.z;
 
-      current_camera_roll = Mathf.LerpAngle(camera_angle,target_angle, angle_roll_speed * Time.fixedDeltaTime);
+      current_camera_roll = Mathf.LerpAngle(camera_angle,target_angle, angleRollSpeed * Time.fixedDeltaTime);
       return FPCamera.eulerAngles.z;
     }
 
@@ -316,21 +352,31 @@ public class Character : MonoBehaviour
 
     private bool JumpBuffer(){
       if(Keyboard.current.spaceKey.wasPressedThisFrame){
-        if(jump_buffer_timer.is_active){
-          jump_buffer_timer.Stop();
-          jump_buffer_timer.Start();
+        if(jumpBufferTimer.is_active){
+          jumpBufferTimer.StopTimer();
+          jumpBufferTimer.StartTimer();
         } else {
-          jump_buffer_timer.Start();
+          jumpBufferTimer.StartTimer();
         }
       }
 
-      return (jump_buffer_timer.is_active );
+      return (jumpBufferTimer.is_active );
     }
     private void ResetJumpBuffer(){
-      jump_buffer_timer.Stop();
+      jumpBufferTimer.StopTimer();
       can_jump = false;
     }
 
+    public void SetDebugText(string t){
+      if(debug_text != null){
+        debug_text.text = t;
+      }
+    }
+    public void SnapToGround(){
+      if(character_collisions.ground_hit.distance > controller.skinWidth){
+        controller.Move(Vector3.down * character_collisions.ground_hit.distance);
+      }
+    }
     void Start()
     {
       controller = GetComponent<CharacterController>();
@@ -348,20 +394,20 @@ public class Character : MonoBehaviour
       wall_running_state = new WallRunningState(this, movement_machine);
 
       //initialize timers to set values
-      slide_timer = gameObject.AddComponent<Timer>();
-      slide_timer.SetTimer(slide_time);
-      jump_buffer_timer = gameObject.AddComponent<Timer>();
-      jump_buffer_timer.SetTimer(jump_buffer_time);
-      jump_cooldown_timer = gameObject.AddComponent<Timer>();
-      jump_cooldown_timer.SetTimer(jump_cooldown_time);
-      wall_jump_cooldown_timer = gameObject.AddComponent<Timer>();
-      wall_jump_cooldown_timer.SetTimer(jump_cooldown_time);
-      coyote_timer = gameObject.AddComponent<Timer>();
-      coyote_timer.SetTimer(coyote_time);
-      wall_run_duration_timer = gameObject.AddComponent<Timer>();
-      wall_run_duration_timer.SetTimer(wall_run_duration);
-      wall_climb_duration_timer = gameObject.AddComponent<Timer>();
-      wall_climb_duration_timer.SetTimer(wall_climb_duration);
+      slideTimer = gameObject.AddComponent<Timer>();
+      slideTimer.SetTimer(slideTime);
+      jumpBufferTimer = gameObject.AddComponent<Timer>();
+      jumpBufferTimer.SetTimer(jumpBufferTime);
+      jumpCooldownTimer = gameObject.AddComponent<Timer>();
+      jumpCooldownTimer.SetTimer(jumpCooldownTime);
+      wallJumpCooldownTimer = gameObject.AddComponent<Timer>();
+      wallJumpCooldownTimer.SetTimer(jumpCooldownTime);
+      coyoteTimer = gameObject.AddComponent<Timer>();
+      coyoteTimer.SetTimer(coyoteTime);
+      wallRunDurationTimer = gameObject.AddComponent<Timer>();
+      wallRunDurationTimer.SetTimer(wallRunDuration);
+      wallClimbDurationTimer = gameObject.AddComponent<Timer>();
+      wallClimbDurationTimer.SetTimer(wallClimbDuration);
       
       //default to the failling state 
       movement_machine.Initialize(falling_state);
@@ -387,6 +433,8 @@ public class Character : MonoBehaviour
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
       movement_machine.cur_state.PhysicsUpdate();
       controller.Move(velocity * Time.fixedDeltaTime);
-
+      if(debug_speed != null){
+        debug_speed.text =  ((int)(((new Vector3(velocity.x, 0 , velocity.z).magnitude / 1000) * 60) * 60)).ToString();
+      }
     }
 }

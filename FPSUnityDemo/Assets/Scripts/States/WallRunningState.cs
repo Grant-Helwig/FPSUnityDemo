@@ -11,12 +11,12 @@ public class WallRunningState : State
     public override void Enter()
     {
         base.Enter();
-        character.SetWallRunValues();
+        character.SetDebugText( "Wall Run");
     }
     public override void Exit()
     {
         base.Exit();
-        character.wall_run_duration_timer.Stop();
+        character.wallRunDurationTimer.StopTimer();
     }
 
     public override void HandleInput()
@@ -27,15 +27,19 @@ public class WallRunningState : State
     {
         base.LogicUpdate();
         if(character.controller.isGrounded){
+            MonoBehaviour.print("hit ground");
             state_machine.ChangeState(character.running_state);
-        } else if(!character.wall_run_duration_timer.is_active){
+        } else if(!character.wallRunDurationTimer.is_active){
+            MonoBehaviour.print("timer ended");
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } else if(character.can_jump){
+            MonoBehaviour.print("jump");
             //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
         }else if(!character.character_collisions.on_wall ||character.input_handler.move_input.z < .5f){
+            MonoBehaviour.print("collisions: " + !character.character_collisions.on_wall + " input: " + (character.input_handler.move_input.z < .5f));
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } 
@@ -43,10 +47,9 @@ public class WallRunningState : State
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        float time_left = character.fixed_angle_roll_duration - (character.wall_run_duration_timer.wait_time - character.wall_run_duration_timer.cur_time);
+        float time_left = character.fixedAngleRollDuration - (character.wallRunDurationTimer.wait_time - character.wallRunDurationTimer.cur_time);
         if(time_left >= 0){
-            MonoBehaviour.print(time_left / character.fixed_angle_roll_duration);
-            character.SetCameraAngleFixed(0, last_cam_angle, Mathf.Pow(time_left / character.fixed_angle_roll_duration, 2f));
+            character.SetCameraAngleFixed(0, last_cam_angle, Mathf.Pow(time_left / character.fixedAngleRollDuration, 2f));
         } else if(character.current_camera_roll != character.max_angle_roll){
             last_cam_angle = character.SetCameraAngle(-character.wall_direction * character.max_angle_roll);
         }

@@ -23,9 +23,9 @@
 //     [SerializeField]
 //     private float speed = 1f;
 //     [SerializeField]
-//     private float max_speed = 5f;
+//     private float maxRunSpeed = 5f;
 //     [SerializeField]
-//     private float acc_speed = 11f;
+//     private float runAccSpeed = 11f;
 //     [SerializeField]
 //     private float dec_speed = 11f;
 //     [SerializeField]
@@ -98,10 +98,10 @@
 //     public Timer standing_cooldown;
 
 //     public void Move(float speed_modifier, Vector3 direction){
-//         if(Mathf.Abs(rigid_body.velocity.magnitude) > max_speed) {
+//         if(Mathf.Abs(rigid_body.velocity.magnitude) > maxRunSpeed) {
 //             rigid_body.velocity = Vector3.MoveTowards(rigid_body.velocity, direction * speed * speed_modifier, dec_speed * Time.deltaTime);
 //         } else {
-//             rigid_body.velocity = Vector3.MoveTowards(rigid_body.velocity, direction * speed * speed_modifier, acc_speed * Time.deltaTime);
+//             rigid_body.velocity = Vector3.MoveTowards(rigid_body.velocity, direction * speed * speed_modifier, runAccSpeed * Time.deltaTime);
 //         }
 //     }
 

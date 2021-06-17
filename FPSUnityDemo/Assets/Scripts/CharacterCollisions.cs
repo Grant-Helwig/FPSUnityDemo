@@ -17,7 +17,7 @@ public class CharacterCollisions : MonoBehaviour
     Vector3[] facing_wall_directions;
     RaycastHit[] wall_hits;
     RaycastHit[] facing_wall_hits;
-    RaycastHit ground_hit;
+    public RaycastHit ground_hit;
     [SerializeField]
     private float max_wall_dist;
     [SerializeField]
@@ -59,18 +59,18 @@ public class CharacterCollisions : MonoBehaviour
 
     public bool WallCheck(){
         wall_hits = new RaycastHit[wall_directions.Length];
-
+        Vector3 lower_body_position = new Vector3(transform.position.x, transform.position.y + (controller.height / 4), transform.position.z);
         for(int i=0; i<wall_directions.Length; i++)
         {
             Vector3 dir = transform.TransformDirection(wall_directions[i]);
-            Physics.Raycast(transform.position, dir, out wall_hits[i], max_wall_dist);
+            Physics.Raycast(lower_body_position, dir, out wall_hits[i], max_wall_dist);
             if(wall_hits[i].collider != null)
             {
-                Debug.DrawRay(transform.position, dir * wall_hits[i].distance, Color.green);
+                Debug.DrawRay(lower_body_position, dir * wall_hits[i].distance, Color.green);
             }
             else
             {
-                Debug.DrawRay(transform.position, dir * max_wall_dist, Color.red);
+                Debug.DrawRay(lower_body_position, dir * max_wall_dist, Color.red);
             }
         }
         

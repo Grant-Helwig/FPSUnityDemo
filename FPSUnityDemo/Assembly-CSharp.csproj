@@ -40,6 +40,7 @@
      <Compile Include="Assets\Scripts\State.cs" />
      <Compile Include="Assets\Scripts\StateMachine.cs" />
      <Compile Include="Assets\Scripts\PlayerCollision.cs" />
+     <Compile Include="Assets\Scripts\States\WallClimbingState.cs" />
      <Compile Include="Assets\Scripts\CopyLimb.cs" />
      <Compile Include="Assets\Scripts\ConfigurableJointExtensions.cs" />
      <Compile Include="Assets\Scripts\CharacterTest.cs" />
@@ -47,11 +48,11 @@
      <Compile Include="Assets\Scripts\Character.cs" />
      <Compile Include="Assets\Scripts\States\CrouchingState.cs" />
      <Compile Include="Assets\Scripts\States\FallingState.cs" />
+     <Compile Include="Assets\Scripts\StateMachineDisplay.cs" />
      <Compile Include="Assets\Scripts\States\WallRunningState.cs" />
      <Compile Include="Assets\Scripts\Timer.cs" />
      <Compile Include="Assets\Scripts\CharacterCollisions.cs" />
      <Compile Include="Assets\Scripts\InputHandler.cs" />
-     <Compile Include="Assets\Scripts\States\WallClimbingState.cs" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Glass_Global.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Object.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Global.shader" />
@@ -648,6 +649,10 @@
       <Project>{4ae1233f-9500-7f4b-585f-df92b436ebf8}</Project>
       <Name>Unity.VSCode.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="com.unity.multiplayer-hlapi.Editor.csproj">
+      <Project>{95ecc8a0-baae-bbc1-a97f-cc5e426de01c}</Project>
+      <Name>com.unity.multiplayer-hlapi.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
       <Project>{8ad2a217-a1a9-5978-ae3c-52f40134df2d}</Project>
       <Name>Unity.TextMeshPro.Editor</Name>
@@ -676,17 +681,29 @@
       <Project>{fc3beb6a-b527-8f0c-45df-833bd545e27a}</Project>
       <Name>Unity.Rider.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="com.unity.multiplayer-weaver.Editor.csproj">
+      <Project>{17e679d3-fc31-5893-6921-82ccbe2030b6}</Project>
+      <Name>com.unity.multiplayer-weaver.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="com.unity.multiplayer-hlapi.Runtime.csproj">
       <Project>{ed7d6642-a89b-e875-76f7-d5db31684a02}</Project>
       <Name>com.unity.multiplayer-hlapi.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="com.unity.multiplayer-hlapi.Editor.csproj">
-      <Project>{95ecc8a0-baae-bbc1-a97f-cc5e426de01c}</Project>
-      <Name>com.unity.multiplayer-hlapi.Editor</Name>
+    <ProjectReference Include="Unity.ProBuilder.csproj">
+      <Project>{54464c6a-a1d6-e3da-bcdf-7f8ff22379ab}</Project>
+      <Name>Unity.ProBuilder</Name>
     </ProjectReference>
-    <ProjectReference Include="com.unity.multiplayer-weaver.Editor.csproj">
-      <Project>{17e679d3-fc31-5893-6921-82ccbe2030b6}</Project>
-      <Name>com.unity.multiplayer-weaver.Editor</Name>
+    <ProjectReference Include="Unity.ProBuilder.AddOns.Editor.csproj">
+      <Project>{6f44c782-daec-64a4-f816-eed8a72307c3}</Project>
+      <Name>Unity.ProBuilder.AddOns.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.Editor.csproj">
+      <Project>{4199b1ff-4578-9e38-31a3-c559968e890d}</Project>
+      <Name>Unity.ProBuilder.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.AssetIdRemapUtility.csproj">
+      <Project>{39e157bc-31f2-64e5-9ccd-4da0a0fc2253}</Project>
+      <Name>Unity.ProBuilder.AssetIdRemapUtility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

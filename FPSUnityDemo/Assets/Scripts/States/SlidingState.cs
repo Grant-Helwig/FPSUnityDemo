@@ -14,6 +14,8 @@ public class SlidingState : State
         base.Enter();
         character.can_wall_run = true;
         character.ResetSlideTimer();
+        character.SnapToGround();
+        character.SetDebugText("Sliding");
     }
     public override void Exit()
     {

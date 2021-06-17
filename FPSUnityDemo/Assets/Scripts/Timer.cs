@@ -21,7 +21,7 @@ public class Timer : MonoBehaviour
         is_active = false; 
     }
 
-    public void Start(){
+    public void StartTimer(){
         if(!is_active){
             cur_time = 0f;
             time_counter = 0f;
@@ -29,7 +29,7 @@ public class Timer : MonoBehaviour
         }
     }
 
-    public void Stop(){
+    public void StopTimer(){
         if(wait_routine != null){
             StopCoroutine(wait_routine);
             is_active = false;

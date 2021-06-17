@@ -221,8 +221,8 @@
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Utilities\Comparers.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Settings\InputSettingsBuildProvider.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Devices\Haptics\IHaptics.cs" />
-     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Internal\AdvancedDropdown\MultiLevelDataSource.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\State\IInputStateCallbackReceiver.cs" />
+     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Internal\AdvancedDropdown\MultiLevelDataSource.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\NativeInputRuntime.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Plugins\PlayerInput\PlayerNotifications.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\InputSettings.cs" />
@@ -293,9 +293,9 @@
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Actions\Composites\ButtonWithTwoModifiers.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Actions\InputControlScheme.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Plugins\Android\AndroidGameController.cs" />
-     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\Processors\EditorWindowSpaceProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Plugins\XR\XRLayoutBuilder.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\TouchControl.cs" />
+     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\Processors\EditorWindowSpaceProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\PropertyDrawers\InputActionDrawerBase.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Internal\GUIHelpers.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Plugins\XR\Devices\Oculus.cs" />

@@ -1,3 +1,4 @@
 
 FPSUnityDemo/Library
-FPSUnityDemo/Temp/UnityLockfile
+FPSUnityDemo/Temp
+*.log
