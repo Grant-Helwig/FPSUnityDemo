@@ -73,13 +73,38 @@ public class Character : MonoBehaviour
     public State wall_running_state;
     public State sliding_state;
     public State wall_climbing_state;
+    public State grappling_state;
     public StateMachine movement_machine;
+    [Header("Grapple Variables")]
+    [SerializeField]
+    private float maxGrappleDistance;
+    [SerializeField]
+    private LayerMask grappleMask;
+    [SerializeField]
+    private float maxGrappleSpeed;
+    [SerializeField]
+    private float grappleAcc;
+    [SerializeField]
+    private float maxAngularGrappleSpeed;
+    [SerializeField]
+    private float grappleAngularAcc;
+    [SerializeField]
+    private float forwardMod;
+    [SerializeField]
+    private float sidewaysMod;
     [Header("Other Variables")]
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
 
     [SerializeField]
     private Transform FPCamera = null;
+    [SerializeField]
+    private Transform lookAt;
+    [SerializeField]
+    private Transform mouth;
+    private GameObject hitLocation;
+    private RaycastHit cameraHit;
+    private RaycastHit grappleHit;
 
     public float max_angle_roll = 1.0f;
     
@@ -320,7 +345,28 @@ public class Character : MonoBehaviour
       // then, add the jumpSpeed value upwards
       velocity += character_collisions.ground_slope * jumpForce;
     }
+    public bool StartGrapple(){
+        if(Physics.Raycast(lookAt.position, FPCamera.forward, out cameraHit, maxGrappleDistance, grappleMask) &&
+          Physics.Raycast(mouth.position, (cameraHit.point- mouth.position).normalized, out grappleHit, grappleMask, grappleMask)) {
+            hitLocation = new GameObject();
+            hitLocation.transform.position = grappleHit.point;
+            hitLocation.transform.parent = grappleHit.transform;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public void GrappleMovement(){
+      Vector3 forward_dir = transform.TransformDirection(Vector3.forward);
+      Vector3 grapple_dir = (hitLocation.transform.position - transform.position).normalized;
+      
+      float grapple_angle = Vector3.Dot(forward_dir, grapple_dir);
+      Vector3 target_angular_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir)* ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
+      Vector3 target_linear_velocity = grapple_dir * maxGrappleSpeed;
+      Debug.DrawRay (transform.position, target_linear_velocity, Color.green);
+      velocity = Vector3.Lerp(velocity, target_angular_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
+    }
     public void SetCharacterHeight(bool force, float height){
       if(force){
         controller.height = height;
@@ -392,6 +438,7 @@ public class Character : MonoBehaviour
       sliding_state = new SlidingState(this, movement_machine);
       wall_climbing_state = new WallClimbingState(this, movement_machine);
       wall_running_state = new WallRunningState(this, movement_machine);
+      grappling_state = new GrapplingState(this, movement_machine);
 
       //initialize timers to set values
       slideTimer = gameObject.AddComponent<Timer>();
@@ -423,6 +470,11 @@ public class Character : MonoBehaviour
     {
       UpdateMouseLook();
       can_jump = JumpBuffer();
+      if(input_handler.is_grappling){
+        if(movement_machine.cur_state != grappling_state){
+          movement_machine.ChangeState(grappling_state);
+        }
+      }
       movement_machine.cur_state.HandleInput();
       movement_machine.cur_state.LogicUpdate();
     }

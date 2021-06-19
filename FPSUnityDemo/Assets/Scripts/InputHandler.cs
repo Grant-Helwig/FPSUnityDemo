@@ -8,12 +8,13 @@ public class InputHandler : MonoBehaviour
     public bool is_jumping;
     public bool is_sliding;
     public bool is_sprinting;
+    public bool is_grappling;
     public Vector3 move_input;
     public Vector2 mouse_delta;
     // Start is called before the first frame update
     void Start()
     {
-        
+        is_grappling = false;
     }
 
     // Update is called once per frame
@@ -44,5 +45,9 @@ public class InputHandler : MonoBehaviour
         
         // Account for sensitivity setting on old Mouse X and Y axes.
         mouse_delta *= 0.1f;
+    }
+
+    void OnGrapple(InputValue value){
+        is_grappling = value.isPressed;
     }
 }
