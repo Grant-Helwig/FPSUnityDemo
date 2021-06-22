@@ -148,6 +148,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     public Text debug_speed;
     public bool stopGrapple = false;
+    private float setGrappleDistance = 0f;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -352,6 +353,7 @@ public class Character : MonoBehaviour
             hitLocation = new GameObject();
             hitLocation.transform.position = grappleHit.point;
             hitLocation.transform.parent = grappleHit.transform;
+            setGrappleDistance = GetGrappleDistance();
             return true;
         } else {
             return false;
@@ -377,16 +379,19 @@ public class Character : MonoBehaviour
       float linear_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * grapple_angle);
       float sideways_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * (1 - grapple_angle));
       
+      Vector3 target_linear_velocity = Vector3.zero;
       //if the player is aiming within 90 degrees of grapple point
-      if(grapple_angle > 0f){
+      if(grapple_angle > .3f){
         //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
-        target_sideways_velocity = forward_dir * sideways_speed;
+        target_sideways_velocity = forward_dir * maxGrappleSpeed;
       } else {
-        target_sideways_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir).normalized * sideways_speed;
+        target_sideways_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir).normalized * maxGrappleSpeed;
+        target_linear_velocity = grapple_dir * (Mathf.Pow(target_sideways_velocity.magnitude, 2f) / setGrappleDistance);
       }
-      Vector3 target_linear_velocity = grapple_dir * maxGrappleSpeed;
+      
       Debug.DrawRay (transform.position, target_sideways_velocity, Color.green);
       //print("Linear Speed: " + linear_speed + "Sideways Speed: " + sideways_speed);
+      print(GetGrappleDistance());
       velocity = Vector3.Lerp(velocity, target_sideways_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
     }
 
@@ -400,7 +405,7 @@ public class Character : MonoBehaviour
       Vector3 grapple_dir = (hitLocation.transform.position - transform.position).normalized;
       
       //get dot product to represent how close to grapple you are aiming
-      print(Vector3.Dot(forward_dir, grapple_dir));
+      //print(Vector3.Dot(forward_dir, grapple_dir));
       return Vector3.Dot(forward_dir, grapple_dir);
     }
 
