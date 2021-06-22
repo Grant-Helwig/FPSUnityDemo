@@ -62,12 +62,20 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Grapple",
-                    "type": "Value",
+                    "name": "GrappleDown",
+                    "type": "Button",
                     "id": "83a33321-96e7-44b8-be35-b8433a9fed37",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
+                },
+                {
+                    "name": "GrappleUp",
+                    "type": "Button",
+                    "id": "6b175456-407b-4c68-9cee-d83700189474",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -331,7 +339,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Grapple",
+                    "action": "GrappleDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71977121-80c9-48cf-8717-fe3bdbf2161b",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrappleUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

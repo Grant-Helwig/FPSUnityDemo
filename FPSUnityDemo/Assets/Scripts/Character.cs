@@ -85,7 +85,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private float grappleAcc;
     [SerializeField]
-    private float maxAngularGrappleSpeed;
+    private float minGrappleSpeed;
     [SerializeField]
     private float grappleAngularAcc;
     [SerializeField]
@@ -147,6 +147,7 @@ public class Character : MonoBehaviour
     public Text debug_text;
     [SerializeField]
     public Text debug_speed;
+    public bool stopGrapple = false;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -358,15 +359,51 @@ public class Character : MonoBehaviour
     }
 
     public void GrappleMovement(){
-      Vector3 forward_dir = transform.TransformDirection(Vector3.forward);
+      //get current aiming forward vector
+      Vector3 forward_dir = FPCamera.TransformDirection(Vector3.forward);
+      //get current vector towards grapple point
       Vector3 grapple_dir = (hitLocation.transform.position - transform.position).normalized;
       
+      //get dot product to represent how close to grapple you are aiming
       float grapple_angle = Vector3.Dot(forward_dir, grapple_dir);
-      Vector3 target_angular_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir)* ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
+      if(grapple_angle < 0){
+        grapple_angle = 0f;
+      }
+
+      //variable used for sidways velocities
+      Vector3 target_sideways_velocity;
+
+      //these variables will blend the fast speed betwen the forward and the sideways vectors depending on grapple angle
+      float linear_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * grapple_angle);
+      float sideways_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * (1 - grapple_angle));
+      
+      //if the player is aiming within 90 degrees of grapple point
+      if(grapple_angle > 0f){
+        //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
+        target_sideways_velocity = forward_dir * sideways_speed;
+      } else {
+        target_sideways_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir).normalized * sideways_speed;
+      }
       Vector3 target_linear_velocity = grapple_dir * maxGrappleSpeed;
-      Debug.DrawRay (transform.position, target_linear_velocity, Color.green);
-      velocity = Vector3.Lerp(velocity, target_angular_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
+      Debug.DrawRay (transform.position, target_sideways_velocity, Color.green);
+      //print("Linear Speed: " + linear_speed + "Sideways Speed: " + sideways_speed);
+      velocity = Vector3.Lerp(velocity, target_sideways_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
     }
+
+    public float GetGrappleDistance(){
+      return Vector3.Distance(hitLocation.transform.position, transform.position);
+    }
+
+    public float GetGrappleAngle(){
+      Vector3 forward_dir = FPCamera.TransformDirection(Vector3.forward);
+      //get current vector towards grapple point
+      Vector3 grapple_dir = (hitLocation.transform.position - transform.position).normalized;
+      
+      //get dot product to represent how close to grapple you are aiming
+      print(Vector3.Dot(forward_dir, grapple_dir));
+      return Vector3.Dot(forward_dir, grapple_dir);
+    }
+
     public void SetCharacterHeight(bool force, float height){
       if(force){
         controller.height = height;
@@ -422,6 +459,24 @@ public class Character : MonoBehaviour
       if(character_collisions.ground_hit.distance > controller.skinWidth){
         controller.Move(Vector3.down * character_collisions.ground_hit.distance);
       }
+    }
+
+    private void OnGrapple(){
+
+    }
+    
+    void OnGrappleDown(){
+        print("grappled");
+        if(movement_machine.cur_state != grappling_state){
+          stopGrapple = false;
+          movement_machine.ChangeState(grappling_state);
+        }
+    }
+    void OnGrappleUp(){
+        print("stop grapple");
+        if(movement_machine.cur_state == grappling_state){
+          stopGrapple = true;
+        }
     }
     void Start()
     {

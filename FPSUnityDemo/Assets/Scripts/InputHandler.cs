@@ -46,8 +46,4 @@ public class InputHandler : MonoBehaviour
         // Account for sensitivity setting on old Mouse X and Y axes.
         mouse_delta *= 0.1f;
     }
-
-    void OnGrapple(InputValue value){
-        is_grappling = value.isPressed;
-    }
 }
