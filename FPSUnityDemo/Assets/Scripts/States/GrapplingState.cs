@@ -59,5 +59,6 @@ public class GrapplingState : State
     {
         base.PhysicsUpdate();
         character.GrappleMovement();
+        //character.SetTongue();
     }
 }

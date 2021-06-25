@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [SelectionBase]
 public class Character : MonoBehaviour
 {
+  public Transform testPosition;
     [Header("General Variables")]
     [SerializeField]
     [Tooltip("General mouse sensitivity")]
@@ -68,6 +69,8 @@ public class Character : MonoBehaviour
     private float  wallRunDuration;
     [SerializeField]
     private float  wallClimbDuration;
+    [SerializeField]
+    private float  grappleCooldown;
     public State running_state;
     public State falling_state;
     public State wall_running_state;
@@ -98,6 +101,14 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     private Transform FPCamera = null;
+    [SerializeField]
+    private Transform grappleOrigin = null;
+    [SerializeField]
+    private GameObject tongue = null;
+    [SerializeField]
+    private GameObject tongueEnd = null;
+    private SplineMesh.Spline tongueSpline;
+    private SplineMesh.Spline tongueEndSpline;
     [SerializeField]
     private Transform lookAt;
     [SerializeField]
@@ -136,6 +147,8 @@ public class Character : MonoBehaviour
     public Timer wallRunDurationTimer; 
     
     public Timer wallClimbDurationTimer; 
+
+    public Timer GrappleCooldownTimer;
     
     public float standing_height;
     public float crouching_height;
@@ -379,7 +392,7 @@ public class Character : MonoBehaviour
       float linear_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * grapple_angle);
       float sideways_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * (1 - grapple_angle));
       
-      Vector3 target_linear_velocity = Vector3.zero;
+      Vector3 target_linear_velocity = grapple_dir;
       //if the player is aiming within 90 degrees of grapple point
       if(grapple_angle > .3f){
         //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
@@ -393,6 +406,16 @@ public class Character : MonoBehaviour
       //print("Linear Speed: " + linear_speed + "Sideways Speed: " + sideways_speed);
       print(GetGrappleDistance());
       velocity = Vector3.Lerp(velocity, target_sideways_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
+    }
+
+    public void SetTongue(){
+      tongueSpline.nodes[0].Position = grappleOrigin.localPosition;
+      tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *3);
+    
+      Vector3 tongue_end = tongue.transform.InverseTransformPoint(hitLocation.transform.position);
+      tongueSpline.nodes[1].Position =  tongue_end;
+      Vector3 scale = new Vector3(.2f, .2f, .2f);
+      tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(grappleHit.normal, Vector3.up)* 3);//Vector3.Scale(grappleHit.normal * -1, scale);
     }
 
     public float GetGrappleDistance(){
@@ -472,7 +495,7 @@ public class Character : MonoBehaviour
     
     void OnGrappleDown(){
         print("grappled");
-        if(movement_machine.cur_state != grappling_state){
+        if(movement_machine.cur_state != grappling_state && !GrappleCooldownTimer.is_active){
           stopGrapple = false;
           movement_machine.ChangeState(grappling_state);
         }
@@ -481,6 +504,7 @@ public class Character : MonoBehaviour
         print("stop grapple");
         if(movement_machine.cur_state == grappling_state){
           stopGrapple = true;
+          GrappleCooldownTimer.StartTimer();
         }
     }
     void Start()
@@ -488,6 +512,9 @@ public class Character : MonoBehaviour
       controller = GetComponent<CharacterController>();
       character_collisions = GetComponent<CharacterCollisions>();
       input_handler = GetComponent<InputHandler>();
+      tongueSpline = tongue.GetComponent<SplineMesh.Spline>();
+      tongueEndSpline = tongueEnd.GetComponent<SplineMesh.Spline>();
+      
       standing_height = controller.height;
       crouching_height = standing_height / 2;
 
@@ -515,6 +542,8 @@ public class Character : MonoBehaviour
       wallRunDurationTimer.SetTimer(wallRunDuration);
       wallClimbDurationTimer = gameObject.AddComponent<Timer>();
       wallClimbDurationTimer.SetTimer(wallClimbDuration);
+      GrappleCooldownTimer = gameObject.AddComponent<Timer>();
+      GrappleCooldownTimer.SetTimer(grappleCooldown);
       
       //default to the failling state 
       movement_machine.Initialize(falling_state);
@@ -540,7 +569,18 @@ public class Character : MonoBehaviour
     }
 
     void FixedUpdate() {
-      
+      tongueEndSpline.nodes[0].Position = tongue.transform.InverseTransformPoint(testPosition.position) +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .3f);
+      tongueEndSpline.nodes[0].Direction = tongue.transform.InverseTransformPoint(testPosition.position)+  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .3f);
+      tongueEndSpline.nodes[1].Position = tongue.transform.InverseTransformPoint(testPosition.position) -  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .7f);
+      tongueEndSpline.nodes[1].Direction = tongue.transform.InverseTransformPoint(testPosition.position) -  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .7f);
+
+      tongueSpline.nodes[0].Position = grappleOrigin.localPosition;
+      tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *5);
+    
+      Vector3 tongue_end = tongue.transform.InverseTransformPoint(testPosition.position);
+      tongueSpline.nodes[1].Position =  tongue_end;
+      Vector3 scale = new Vector3(.2f, .2f, .2f);
+      tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* 5);//Vector3.Scale(grappleHit.normal * -1, scale);
       //input_direction = input_handler.move_input;
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
       movement_machine.cur_state.PhysicsUpdate();

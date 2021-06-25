@@ -147,6 +147,36 @@ Transform:
   m_Father: {fileID: 1478981212326873860}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &77993831670274390
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2881615365912218414}
+  m_Layer: 0
+  m_Name: GrappleOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2881615365912218414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77993831670274390}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.594, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1372714904437785815}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &92320803299344744
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,6 +3422,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1372714903671459122}
+  - {fileID: 2881615365912218414}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3425,54 +3456,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d540e48202147a54fa83a3c26fc35ed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseSensitivity: 1
+  cameraHeightRatio: 0.9
+  maxRunSpeed: 1
+  runAccSpeed: 1
+  jumpForce: 1
+  maxCrouchSpeed: 1
+  crouchAccSpeed: 1
+  crouchSharpness: 10
+  maxSlideSpeed: 1
+  minSlideSpeed: 1
+  slideAccSpeed: 1
+  gravity: 20
+  maxAirSpeed: 1
+  airAcc: 1
+  wallSpeedMod: 1
+  wallRunGravity: 1
+  maxClimbSpeed: 1
+  angleRollSpeed: 1
+  fixedAngleRollDuration: 1
+  slideTime: 0
+  jumpCooldownTime: 0
+  jumpBufferTime: 0
+  coyoteTime: 0
+  wallRunDuration: 0
+  wallClimbDuration: 0
+  grappleCooldown: 0
+  maxGrappleDistance: 0
+  grappleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  maxGrappleSpeed: 0
+  grappleAcc: 0
+  minGrappleSpeed: 0
+  grappleAngularAcc: 0
+  forwardMod: 0
+  sidewaysMod: 0
   character_collisions: {fileID: 0}
   input_handler: {fileID: 0}
   FPCamera: {fileID: 1372714903671459122}
-  mouse_sensitivity: 1
-  gravity: 20
-  air_acc: 25
-  max_air_speed: 14.3
-  jump_force: 9
-  max_speed: 6
-  acc_speed: 15
-  max_crouch_speed: 2.5
-  crouch_acc_speed: 7.5
-  wall_speed_mod: 11
-  wall_run_gravity: 20
-  max_slide_speed: 12
-  max_climb_speed: 7
-  base_slide_speed: 13
-  slide_acc_speed: 1
+  grappleOrigin: {fileID: 2881615365912218414}
+  lookAt: {fileID: 0}
+  mouth: {fileID: 0}
   max_angle_roll: 30
-  angle_roll_speed: 5
-  fixed_angle_roll_duration: 3
-  crouching_sharpness: 10
   controller: {fileID: 0}
   can_wall_run: 1
-  camera_height_ratio: 0.9
   lock_cursor: 1
   velocity: {x: 0, y: 0, z: 0}
   input_direction: {x: 0, y: 0, z: 0}
   wall_direction: 0
-  slide_timer: {fileID: 0}
-  slide_time: 0.5
-  jump_cooldown_timer: {fileID: 0}
-  wall_jump_cooldown_timer: {fileID: 0}
-  jump_cooldown_time: 0.5
-  jump_buffer_timer: {fileID: 0}
-  jump_buffer_time: 0.5
-  coyote_timer: {fileID: 0}
-  coyote_time: 0.5
-  wall_run_duration_timer: {fileID: 0}
-  wall_run_duration: 4
-  wall_climb_duration_timer: {fileID: 0}
-  wall_climb_duration: 1
+  slideTimer: {fileID: 0}
+  jumpCooldownTimer: {fileID: 0}
+  wallJumpCooldownTimer: {fileID: 0}
+  jumpBufferTimer: {fileID: 0}
+  coyoteTimer: {fileID: 0}
+  wallRunDurationTimer: {fileID: 0}
+  wallClimbDurationTimer: {fileID: 0}
+  GrappleCooldownTimer: {fileID: 0}
   standing_height: 0
   crouching_height: 0
   can_jump: 0
   current_camera_roll: 0
   debug_text: {fileID: 0}
   debug_speed: {fileID: 0}
+  stopGrapple: 0
 --- !u!95 &1372714904437785809
 Animator:
   serializedVersion: 3
@@ -3559,6 +3606,7 @@ MonoBehaviour:
   is_jumping: 0
   is_sliding: 0
   is_sprinting: 0
+  is_grappling: 0
   move_input: {x: 0, y: 0, z: 0}
   mouse_delta: {x: 0, y: 0}
 --- !u!1 &1410232733239692780
