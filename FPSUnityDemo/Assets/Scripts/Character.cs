@@ -162,6 +162,7 @@ public class Character : MonoBehaviour
     public Text debug_speed;
     public bool stopGrapple = false;
     private float setGrappleDistance = 0f;
+    private int grappleDirection;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -367,6 +368,9 @@ public class Character : MonoBehaviour
             hitLocation.transform.position = grappleHit.point;
             hitLocation.transform.parent = grappleHit.transform;
             setGrappleDistance = GetGrappleDistance();
+            float check_dist = Vector3.Distance((tongue.transform.InverseTransformPoint(hitLocation.transform.position) + Vector3.Cross(grappleHit.normal, Vector3.up)), tongue.transform.InverseTransformPoint(transform.position));
+            grappleDirection = check_dist - setGrappleDistance > 0 ? 1 : -1;
+            print(check_dist + " " + " " + setGrappleDistance);
             return true;
         } else {
             return false;
@@ -404,18 +408,26 @@ public class Character : MonoBehaviour
       
       Debug.DrawRay (transform.position, target_sideways_velocity, Color.green);
       //print("Linear Speed: " + linear_speed + "Sideways Speed: " + sideways_speed);
-      print(GetGrappleDistance());
       velocity = Vector3.Lerp(velocity, target_sideways_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
     }
 
     public void SetTongue(){
       tongueSpline.nodes[0].Position = grappleOrigin.localPosition;
-      tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *3);
+      tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *3 + FPCamera.TransformDirection(Vector3.down));
     
       Vector3 tongue_end = tongue.transform.InverseTransformPoint(hitLocation.transform.position);
       tongueSpline.nodes[1].Position =  tongue_end;
       Vector3 scale = new Vector3(.2f, .2f, .2f);
-      tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(grappleHit.normal, Vector3.up)* 3);//Vector3.Scale(grappleHit.normal * -1, scale);
+      tongueSpline.nodes[1].Direction = tongue_end + (Vector3.Cross(grappleHit.normal, Vector3.up) *grappleDirection); //  (Vector3.Cross(grappleHit.normal, Vector3.up)* 3);//Vector3.Scale(grappleHit.normal * -1, scale);
+
+      // tongueEndSpline.nodes[0].Position = tongue.transform.InverseTransformPoint(hitLocation.transform.position) +  (Vector3.Cross(grappleHit.normal, Vector3.up)* .3f);
+      // tongueEndSpline.nodes[0].Direction = tongue.transform.InverseTransformPoint(hitLocation.transform.position)+  (Vector3.Cross(grappleHit.normal, Vector3.up)* .3f);
+      //tongueEndSpline.nodes[1].Position = grappleOrigin.localPosition;
+      //tongueEndSpline.nodes[1].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *3);
+      // tongueEndSpline.nodes[1].Position = tongue.transform.InverseTransformPoint(hitLocation.transform.position) -  (Vector3.Cross(grappleHit.normal, Vector3.up)* .7f);
+      // tongueEndSpline.nodes[1].Direction = tongue.transform.InverseTransformPoint(hitLocation.transform.position) -  (Vector3.Cross(grappleHit.normal, Vector3.up)* .7f);
+      //tongueEndSpline.nodes[0].Position = tongue_end;
+      //tongueEndSpline.nodes[0].Direction = tongue_end +  (Vector3.Cross(grappleHit.normal, Vector3.up)* 3);
     }
 
     public float GetGrappleDistance(){
@@ -569,18 +581,14 @@ public class Character : MonoBehaviour
     }
 
     void FixedUpdate() {
-      tongueEndSpline.nodes[0].Position = tongue.transform.InverseTransformPoint(testPosition.position) +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .3f);
-      tongueEndSpline.nodes[0].Direction = tongue.transform.InverseTransformPoint(testPosition.position)+  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .3f);
-      tongueEndSpline.nodes[1].Position = tongue.transform.InverseTransformPoint(testPosition.position) -  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .7f);
-      tongueEndSpline.nodes[1].Direction = tongue.transform.InverseTransformPoint(testPosition.position) -  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* .7f);
 
-      tongueSpline.nodes[0].Position = grappleOrigin.localPosition;
-      tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *5);
+      // tongueSpline.nodes[0].Position = grappleOrigin.localPosition;
+      // tongueSpline.nodes[0].Direction = grappleOrigin.localPosition + (FPCamera.TransformDirection(Vector3.forward) *5);
     
-      Vector3 tongue_end = tongue.transform.InverseTransformPoint(testPosition.position);
-      tongueSpline.nodes[1].Position =  tongue_end;
-      Vector3 scale = new Vector3(.2f, .2f, .2f);
-      tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* 5);//Vector3.Scale(grappleHit.normal * -1, scale);
+      // Vector3 tongue_end = tongue.transform.InverseTransformPoint(testPosition.position);
+      // tongueSpline.nodes[1].Position =  tongue_end;
+      // Vector3 scale = new Vector3(.2f, .2f, .2f);
+      // tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* 5);//Vector3.Scale(grappleHit.normal * -1, scale);
       //input_direction = input_handler.move_input;
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
       movement_machine.cur_state.PhysicsUpdate();
