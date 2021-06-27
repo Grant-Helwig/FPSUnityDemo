@@ -11,6 +11,7 @@ public class RunningState : State
     public override void Enter()
     {
         base.Enter();
+        character.lastWallNormal = Vector3.zero;
         character.can_wall_run = true;
         character.SnapToGround();
         character.SetDebugText("Running");

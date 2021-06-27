@@ -15,17 +15,21 @@ public class GrapplingState : State
         character.SetDebugText( "Grappling");
         if(!character.StartGrapple()){
             state_machine.ChangeState(state_machine.prev_state);
+        } else {
+            character.lastWallNormal = Vector3.zero;
+            character.can_wall_run = true;
         }
     }
     public override void Exit()
     {
         base.Exit();
+        character.tongue.SetActive(false);
     }
     public override void HandleInput()
     {
         base.HandleInput();
         if(character.stopGrapple || 
-            character.GetGrappleDistance() < 2f ||
+            character.GetGrappleDistance() < 5f ||
             character.GetGrappleAngle()< -.3f){
             if(character.character_collisions.on_ground && !character.jumpCooldownTimer.is_active){
                 if(character.input_handler.is_sliding){
@@ -37,13 +41,15 @@ public class GrapplingState : State
             //transition to wall states 
             } else if(character.character_collisions.on_wall){
                 //can wall run is reset when touching the ground, always allow wall states after this
-                if(character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
+                if(character.GetWallDifference() <= .7f && character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
                     character.SetWallRunValues();
                     if(character.character_collisions.facing_wall){
                         state_machine.ChangeState(character.wall_climbing_state);
                     } else {
                         state_machine.ChangeState(character.wall_running_state);
                     }
+                } else {
+                    state_machine.ChangeState(character.falling_state);
                 }
             } else {
                 state_machine.ChangeState(character.falling_state);

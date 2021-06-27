@@ -42,7 +42,7 @@ public class FallingState : State
         //transition to wall states 
         } else if(character.character_collisions.on_wall){
             //can wall run is reset when touching the ground, always allow wall states after this
-            if(character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
+            if(character.GetWallDifference() <= .7f  && character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
                 character.SetWallRunValues();
                 if(character.character_collisions.facing_wall){
                     state_machine.ChangeState(character.wall_climbing_state);

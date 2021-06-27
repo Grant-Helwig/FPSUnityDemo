@@ -13,6 +13,7 @@ public class SlidingState : State
     {
         base.Enter();
         character.can_wall_run = true;
+        character.lastWallNormal = Vector3.zero;
         character.ResetSlideTimer();
         character.SnapToGround();
         character.SetDebugText("Sliding");

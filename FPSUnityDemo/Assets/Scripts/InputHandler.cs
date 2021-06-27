@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    public bool is_jumping;
+    public bool is_jumping = false;
     public bool is_sliding;
     public bool is_sprinting;
     public bool is_grappling;

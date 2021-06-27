@@ -12,11 +12,13 @@ public class WallRunningState : State
     {
         base.Enter();
         character.SetDebugText( "Wall Run");
+        MonoBehaviour.print(character.GetWallDifference());
     }
     public override void Exit()
     {
         base.Exit();
         character.wallRunDurationTimer.StopTimer();
+        character.EndWallRun();
     }
 
     public override void HandleInput()

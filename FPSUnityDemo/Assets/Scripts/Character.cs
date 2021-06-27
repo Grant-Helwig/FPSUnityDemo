@@ -104,7 +104,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private Transform grappleOrigin = null;
     [SerializeField]
-    private GameObject tongue = null;
+    public GameObject tongue = null;
     [SerializeField]
     private GameObject tongueEnd = null;
     private SplineMesh.Spline tongueSpline;
@@ -163,6 +163,7 @@ public class Character : MonoBehaviour
     public bool stopGrapple = false;
     private float setGrappleDistance = 0f;
     private int grappleDirection;
+    public Vector3 lastWallNormal = Vector3.zero;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -234,6 +235,13 @@ public class Character : MonoBehaviour
       velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
     }
 
+    public void EndWallRun(){
+      lastWallNormal = wall_hit_normal;
+    }
+
+    public float GetWallDifference(){
+      return Vector3.Dot(lastWallNormal, character_collisions.WallHitNormal());
+    }
     public void WallClimb(){
       //Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * maxClimbSpeed;
       Vector3 target_velocity =  Vector3.up * maxClimbSpeed;
@@ -243,13 +251,13 @@ public class Character : MonoBehaviour
     public void SlideMovement(){
       //this gets the current angle of slope we are on
       float current_slope = Mathf.Round(Vector3.Angle(character_collisions.ground_slope, transform.up));
-      
+      print(current_slope);
       //create values used to determine the slide direction and speed 
       Vector3 slide_direction;
       float slide_speed;
       Vector3 target_velocity; 
       // if we are on flat ground use initial values otherwise calculate slope values
-      if(Mathf.Approximately(current_slope, 0)){
+      if(Mathf.Abs(current_slope) < 10){
         slide_direction = last_slide_direction;
         slide_speed = last_slide_speed;
         if(!slideTimerSet){
@@ -368,6 +376,7 @@ public class Character : MonoBehaviour
             hitLocation.transform.position = grappleHit.point;
             hitLocation.transform.parent = grappleHit.transform;
             setGrappleDistance = GetGrappleDistance();
+            tongue.SetActive(true);
             float check_dist = Vector3.Distance((tongue.transform.InverseTransformPoint(hitLocation.transform.position) + Vector3.Cross(grappleHit.normal, Vector3.up)), tongue.transform.InverseTransformPoint(transform.position));
             grappleDirection = check_dist - setGrappleDistance > 0 ? 1 : -1;
             print(check_dist + " " + " " + setGrappleDistance);
@@ -396,18 +405,20 @@ public class Character : MonoBehaviour
       float linear_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * grapple_angle);
       float sideways_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * (1 - grapple_angle));
       
-      Vector3 target_linear_velocity = grapple_dir;
+      Vector3 target_linear_velocity = grapple_dir * 3;
       //if the player is aiming within 90 degrees of grapple point
       if(grapple_angle > .3f){
         //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
         target_sideways_velocity = forward_dir * maxGrappleSpeed;
+        setGrappleDistance = GetGrappleDistance();
       } else {
         target_sideways_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir).normalized * maxGrappleSpeed;
         target_linear_velocity = grapple_dir * (Mathf.Pow(target_sideways_velocity.magnitude, 2f) / setGrappleDistance);
+        print("Linear Speed: " + target_linear_velocity.magnitude + " Sideways Speed: " + target_sideways_velocity.magnitude);
       }
       
       Debug.DrawRay (transform.position, target_sideways_velocity, Color.green);
-      //print("Linear Speed: " + linear_speed + "Sideways Speed: " + sideways_speed);
+      
       velocity = Vector3.Lerp(velocity, target_sideways_velocity + target_linear_velocity, grappleAcc * Time.fixedDeltaTime);
     }
 
@@ -474,10 +485,11 @@ public class Character : MonoBehaviour
     
 
     private bool JumpBuffer(){
-      if(Keyboard.current.spaceKey.wasPressedThisFrame){
+      if( input_handler.is_jumping){//Keyboard.current.spaceKey.wasPressedThisFrame){
         if(jumpBufferTimer.is_active){
           jumpBufferTimer.StopTimer();
           jumpBufferTimer.StartTimer();
+          input_handler.is_jumping = false;
         } else {
           jumpBufferTimer.StartTimer();
         }
@@ -570,7 +582,9 @@ public class Character : MonoBehaviour
     void Update()
     {
       UpdateMouseLook();
-      can_jump = JumpBuffer();
+      if(!jumpCooldownTimer.is_active && !wallJumpCooldownTimer.is_active){
+        can_jump = JumpBuffer();
+      }
       if(input_handler.is_grappling){
         if(movement_machine.cur_state != grappling_state){
           movement_machine.ChangeState(grappling_state);
