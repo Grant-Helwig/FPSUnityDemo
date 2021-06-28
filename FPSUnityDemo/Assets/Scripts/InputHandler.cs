@@ -24,6 +24,7 @@ public class InputHandler : MonoBehaviour
     }
 
     void OnJump(InputValue value){
+        print("jump pressed");
         is_jumping = value.isPressed;
     }
 
