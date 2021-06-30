@@ -23,6 +23,8 @@ public class Character : MonoBehaviour
     private float runAccSpeed = 1.0f;
     [SerializeField]
     private float jumpForce = 1.0f;
+    public AnimatorOverrideController[] animatorOverrideControllers;
+    public Animator animator;
     [Header("Sliding Variables")]
     [SerializeField]
     private float maxCrouchSpeed = 1.0f;
@@ -164,6 +166,9 @@ public class Character : MonoBehaviour
     private float setGrappleDistance = 0f;
     private int grappleDirection;
     public Vector3 lastWallNormal = Vector3.zero;
+    private AnimatorOverrideController currentAnimation;
+    public Anim curAnimState;
+    private List<KeyValuePair<AnimationClip, AnimationClip>> overrides;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -251,7 +256,7 @@ public class Character : MonoBehaviour
     public void SlideMovement(){
       //this gets the current angle of slope we are on
       float current_slope = Mathf.Round(Vector3.Angle(character_collisions.ground_slope, transform.up));
-      print(current_slope);
+      //print(current_slope);
       //create values used to determine the slide direction and speed 
       Vector3 slide_direction;
       float slide_speed;
@@ -531,6 +536,31 @@ public class Character : MonoBehaviour
           GrappleCooldownTimer.StartTimer();
         }
     }
+
+    public void SetAnimation(Anim index){
+      animator.SetInteger("Change", ((int)index));
+      curAnimState = index;
+      // animatorOverrideControllers[((int)index)].GetOverrides(overrides);
+      // if(animator.GetInteger("Change") == 1){
+      //   print("state1");
+      //   overrides[1] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[1].Key, animator.runtimeAnimatorController.animationClips[1]);
+      //   //overrides[1] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[1].Key, animator.runtimeAnimatorController.animationClips[0]);
+      //   currentAnimation = animatorOverrideControllers[((int)index)];
+      //   currentAnimation.ApplyOverrides(overrides);
+      //   animator.runtimeAnimatorController = currentAnimation;
+      //   animator.SetInteger("Change", -1);
+      //   print(animator.GetInteger("Change"));
+      // } else {
+      //   print("state2");
+      //   overrides[0] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[0].Key, animator.runtimeAnimatorController.animationClips[0]);
+      //   currentAnimation = animatorOverrideControllers[((int)index)];
+      //   currentAnimation.ApplyOverrides(overrides);
+      //   animator.runtimeAnimatorController = currentAnimation;
+      //   animator.SetInteger("Change", 1);
+      // }
+      // curAnimState = index;
+      //var test = animator.runtimeAnimatorController.animationClips[0];
+    }
     void Start()
     {
       controller = GetComponent<CharacterController>();
@@ -538,7 +568,11 @@ public class Character : MonoBehaviour
       input_handler = GetComponent<InputHandler>();
       tongueSpline = tongue.GetComponent<SplineMesh.Spline>();
       tongueEndSpline = tongueEnd.GetComponent<SplineMesh.Spline>();
-      
+      //animator = GetComponent<Animator>();
+      overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>(animatorOverrideControllers[0].overridesCount);
+  
+      print(overrides);
+      SetAnimation(((int)Anim.Idle));
       standing_height = controller.height;
       crouching_height = standing_height / 2;
 
@@ -612,3 +646,5 @@ public class Character : MonoBehaviour
       }
     }
 }
+
+public enum Anim : int{Idle, Running, Sliding, Falling}

@@ -13,6 +13,7 @@ public class WallRunningState : State
         base.Enter();
         character.SetDebugText( "Wall Run");
         MonoBehaviour.print(character.GetWallDifference());
+        character.SetAnimation(Anim.Running);
     }
     public override void Exit()
     {

@@ -12,7 +12,7 @@ public class WallClimbingState : State
     {
         base.Enter();
         character.SetWallClimbValues();
-        
+        character.SetAnimation(Anim.Running);
     }
     public override void Exit()
     {

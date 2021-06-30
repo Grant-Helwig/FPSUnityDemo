@@ -17,6 +17,7 @@ public class SlidingState : State
         character.ResetSlideTimer();
         character.SnapToGround();
         character.SetDebugText("Sliding");
+        character.SetAnimation(Anim.Sliding);
     }
     public override void Exit()
     {

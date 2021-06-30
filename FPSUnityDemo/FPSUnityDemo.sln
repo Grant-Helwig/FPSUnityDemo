@@ -51,9 +51,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ProBuilder.AssetIdRem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Settings.Editor", "Unity.Settings.Editor.csproj", "{bf2e0f23-0b05-47cd-c109-7a7fe46f6959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ProBuilder.AddOns.Editor", "Unity.ProBuilder.AddOns.Editor.csproj", "{6f44c782-daec-64a4-f816-eed8a72307c3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{911b1fc7-5ed4-69c4-096b-1d32a23af5b4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ProBuilder.AddOns.Editor", "Unity.ProBuilder.AddOns.Editor.csproj", "{6f44c782-daec-64a4-f816-eed8a72307c3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,10 +110,10 @@ Global
 		{39e157bc-31f2-64e5-9ccd-4da0a0fc2253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{bf2e0f23-0b05-47cd-c109-7a7fe46f6959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{bf2e0f23-0b05-47cd-c109-7a7fe46f6959}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6f44c782-daec-64a4-f816-eed8a72307c3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6f44c782-daec-64a4-f816-eed8a72307c3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{911b1fc7-5ed4-69c4-096b-1d32a23af5b4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{911b1fc7-5ed4-69c4-096b-1d32a23af5b4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6f44c782-daec-64a4-f816-eed8a72307c3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6f44c782-daec-64a4-f816-eed8a72307c3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
