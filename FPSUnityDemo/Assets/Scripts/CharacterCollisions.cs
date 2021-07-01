@@ -46,8 +46,7 @@ public class CharacterCollisions : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
-    {
+    private void Update() {
         on_wall = WallCheck();
         on_ground = GroundCheck();
         //facing_wall = FacingWallCheck();
@@ -85,7 +84,8 @@ public class CharacterCollisions : MonoBehaviour
             facing_wall = Vector3.Dot(along_wall, orthogonal_wall_vector) < .35f && Vector3.Dot(along_wall, orthogonal_wall_vector) > -.35f  ? true : false;
 
             return true && !SlopeLimitCheck(last_wall_normal);
-        } else {
+        }  else {
+            print("not on wall");
             return false;
         }
     }

@@ -15,6 +15,7 @@ public class WallRunningState : State
         MonoBehaviour.print(character.GetWallDifference());
         character.SetAnimation(Anim.Running);
         character.EnableWallRunArm();
+        //MonoBehaviour.print("dir: " + character.velocity.normalized);
     }
     public override void Exit()
     {
@@ -22,6 +23,7 @@ public class WallRunningState : State
         character.wallRunDurationTimer.StopTimer();
         character.EndWallRun();
         character.DisableWallRunArms();
+        //MonoBehaviour.print("dir: " + character.velocity.normalized);
     }
 
     public override void HandleInput()
@@ -60,4 +62,6 @@ public class WallRunningState : State
         }
         character.WallRun();
     }
+
+    
 }

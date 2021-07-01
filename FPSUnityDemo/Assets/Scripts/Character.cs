@@ -24,7 +24,6 @@ public class Character : MonoBehaviour
     private float runAccSpeed = 1.0f;
     [SerializeField]
     private float jumpForce = 1.0f;
-    public AnimatorOverrideController[] animatorOverrideControllers;
     public Animator animator;
     [Header("Sliding Variables")]
     [SerializeField]
@@ -171,9 +170,7 @@ public class Character : MonoBehaviour
     private float setGrappleDistance = 0f;
     private int grappleDirection;
     public Vector3 lastWallNormal = Vector3.zero;
-    private AnimatorOverrideController currentAnimation;
     public Anim curAnimState;
-    private List<KeyValuePair<AnimationClip, AnimationClip>> overrides;
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
@@ -243,6 +240,8 @@ public class Character : MonoBehaviour
 
       // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
+      
+      //velocity += wall_hit_normal * -1;
     }
 
     public void EnableWallRunArm(){
@@ -274,7 +273,7 @@ public class Character : MonoBehaviour
     public void SlideMovement(){
       //this gets the current angle of slope we are on
       float current_slope = Mathf.Round(Vector3.Angle(character_collisions.ground_slope, transform.up));
-      //print(current_slope);
+
       //create values used to determine the slide direction and speed 
       Vector3 slide_direction;
       float slide_speed;
@@ -353,6 +352,9 @@ public class Character : MonoBehaviour
       
       //use the dot product to determine which direction the player is facing on the wall
       wall_direction = Vector3.Dot(along_wall, orthogonal_wall_vector) < 0 ? -1 : 1; 
+
+      //snap to wall or else you get very inconsistent wall running 
+      controller.Move((wall_hit_normal * -1) * (Vector3.Distance(transform.position,character_collisions.last_wall_position)- controller.radius));
     }
 
     public void SetWallClimbValues(){    
@@ -402,7 +404,6 @@ public class Character : MonoBehaviour
             tongue.SetActive(true);
             float check_dist = Vector3.Distance((tongue.transform.InverseTransformPoint(hitLocation.transform.position) + Vector3.Cross(grappleHit.normal, Vector3.up)), tongue.transform.InverseTransformPoint(transform.position));
             grappleDirection = check_dist - setGrappleDistance > 0 ? 1 : -1;
-            print(check_dist + " " + " " + setGrappleDistance);
             return true;
         } else {
             return false;
@@ -437,7 +438,6 @@ public class Character : MonoBehaviour
       } else {
         target_sideways_velocity = Vector3.ProjectOnPlane(forward_dir, grapple_dir).normalized * maxGrappleSpeed;
         target_linear_velocity = grapple_dir * (Mathf.Pow(target_sideways_velocity.magnitude, 2f) / setGrappleDistance);
-        print("Linear Speed: " + target_linear_velocity.magnitude + " Sideways Speed: " + target_sideways_velocity.magnitude);
       }
       
       Debug.DrawRay (transform.position, target_sideways_velocity, Color.green);
@@ -474,7 +474,6 @@ public class Character : MonoBehaviour
       Vector3 grapple_dir = (hitLocation.transform.position - transform.position).normalized;
       
       //get dot product to represent how close to grapple you are aiming
-      //print(Vector3.Dot(forward_dir, grapple_dir));
       return Vector3.Dot(forward_dir, grapple_dir);
     }
 
@@ -558,26 +557,10 @@ public class Character : MonoBehaviour
     public void SetAnimation(Anim index){
       animator.SetInteger("Change", ((int)index));
       curAnimState = index;
-      // animatorOverrideControllers[((int)index)].GetOverrides(overrides);
-      // if(animator.GetInteger("Change") == 1){
-      //   print("state1");
-      //   overrides[1] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[1].Key, animator.runtimeAnimatorController.animationClips[1]);
-      //   //overrides[1] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[1].Key, animator.runtimeAnimatorController.animationClips[0]);
-      //   currentAnimation = animatorOverrideControllers[((int)index)];
-      //   currentAnimation.ApplyOverrides(overrides);
-      //   animator.runtimeAnimatorController = currentAnimation;
-      //   animator.SetInteger("Change", -1);
-      //   print(animator.GetInteger("Change"));
-      // } else {
-      //   print("state2");
-      //   overrides[0] = new KeyValuePair<AnimationClip, AnimationClip>(overrides[0].Key, animator.runtimeAnimatorController.animationClips[0]);
-      //   currentAnimation = animatorOverrideControllers[((int)index)];
-      //   currentAnimation.ApplyOverrides(overrides);
-      //   animator.runtimeAnimatorController = currentAnimation;
-      //   animator.SetInteger("Change", 1);
-      // }
-      // curAnimState = index;
-      //var test = animator.runtimeAnimatorController.animationClips[0];
+    }
+    
+    private void Awake() {
+      Application.targetFrameRate = 120;
     }
     void Start()
     {
@@ -586,10 +569,7 @@ public class Character : MonoBehaviour
       input_handler = GetComponent<InputHandler>();
       tongueSpline = tongue.GetComponent<SplineMesh.Spline>();
       tongueEndSpline = tongueEnd.GetComponent<SplineMesh.Spline>();
-      //animator = GetComponent<Animator>();
-      overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>(animatorOverrideControllers[0].overridesCount);
-  
-      print(overrides);
+
       SetAnimation(((int)Anim.Idle));
       standing_height = controller.height;
       crouching_height = standing_height / 2;
