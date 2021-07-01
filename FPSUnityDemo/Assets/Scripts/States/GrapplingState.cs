@@ -18,6 +18,7 @@ public class GrapplingState : State
         } else {
             character.lastWallNormal = Vector3.zero;
             character.can_wall_run = true;
+            character.SetAnimation(Anim.Falling);
         }
     }
     public override void Exit()

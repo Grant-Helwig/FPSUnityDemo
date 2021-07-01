@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.UI;
+using RootMotion.FinalIK;
 
 [SelectionBase]
 public class Character : MonoBehaviour
@@ -100,6 +101,10 @@ public class Character : MonoBehaviour
     [Header("Other Variables")]
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
+    [SerializeField]
+    private LimbIK leftArm = null;
+    [SerializeField]
+    private LimbIK rightArm = null;
 
     [SerializeField]
     private Transform FPCamera = null;
@@ -238,6 +243,19 @@ public class Character : MonoBehaviour
 
       // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
+    }
+
+    public void EnableWallRunArm(){
+      if(wall_direction < 0){
+        rightArm.enabled = true;
+      } else {
+        leftArm.enabled = true;
+      }
+    }
+
+    public void DisableWallRunArms(){
+      leftArm.enabled = false;
+      rightArm.enabled = false;
     }
 
     public void EndWallRun(){

@@ -14,12 +14,14 @@ public class WallRunningState : State
         character.SetDebugText( "Wall Run");
         MonoBehaviour.print(character.GetWallDifference());
         character.SetAnimation(Anim.Running);
+        character.EnableWallRunArm();
     }
     public override void Exit()
     {
         base.Exit();
         character.wallRunDurationTimer.StopTimer();
         character.EndWallRun();
+        character.DisableWallRunArms();
     }
 
     public override void HandleInput()

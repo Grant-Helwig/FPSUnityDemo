@@ -15,12 +15,11 @@ public class RunningState : State
         character.can_wall_run = true;
         character.SnapToGround();
         character.SetDebugText("Running");
-        character.SetAnimation(Anim.Running);
+        //character.SetAnimation(Anim.Running);
     }
     public override void Exit()
     {
         base.Exit();
-        character.SetAnimation(Anim.Running);
     }
 
     public override void HandleInput()
@@ -32,6 +31,13 @@ public class RunningState : State
     }
     public override void LogicUpdate()
     {
+        if(character.velocity.magnitude < 2f && character.curAnimState != Anim.Idle){
+            MonoBehaviour.print("chill");
+            character.SetAnimation(Anim.Idle);
+        } else if(character.velocity.magnitude >= 2f && character.curAnimState != Anim.Running) {
+            MonoBehaviour.print("runnnn");
+            character.SetAnimation(Anim.Running);
+        }
         base.LogicUpdate();
         if(!character.character_collisions.on_ground){
             character.coyoteTimer.StartTimer();
@@ -53,12 +59,6 @@ public class RunningState : State
             } else {
                 state_machine.ChangeState(character.sliding_state);
             }
-        }
-
-        if(character.velocity.magnitude < 2f && character.curAnimState != Anim.Idle){
-            character.SetAnimation(Anim.Idle);
-        } else if(character.velocity.magnitude >= 2f && character.curAnimState != Anim.Running) {
-            character.SetAnimation(Anim.Running);
         }
     }
     public override void PhysicsUpdate()
