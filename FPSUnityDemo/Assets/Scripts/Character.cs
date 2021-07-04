@@ -22,8 +22,10 @@ public class Character : MonoBehaviour
     [Header("Running Variables")]
     [SerializeField]
     private float maxRunSpeed = 1.0f;
+    public float MaxRunSpeed { get { return maxRunSpeed; } set { maxRunSpeed = value; } }
     [SerializeField]
     private float runAccSpeed = 1.0f;
+    public float RunAccSpeed { get { return runAccSpeed; } set { runAccSpeed = value; } }
     [SerializeField]
     private float jumpForce = 1.0f;
     public Animator animator;
