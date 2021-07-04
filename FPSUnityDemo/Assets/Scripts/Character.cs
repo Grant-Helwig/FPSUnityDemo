@@ -28,10 +28,12 @@ public class Character : MonoBehaviour
     public float RunAccSpeed { get { return runAccSpeed; } set { runAccSpeed = value; } }
     [SerializeField]
     private float jumpForce = 1.0f;
+    public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
     public Animator animator;
     [Header("Sliding Variables")]
     [SerializeField]
     private float maxCrouchSpeed = 1.0f;
+    public float MaxCrouchSpeed { get { return maxCrouchSpeed; } set { maxCrouchSpeed = value; } }
     [SerializeField]
     private float crouchAccSpeed = 1.0f;
     [SerializeField]
