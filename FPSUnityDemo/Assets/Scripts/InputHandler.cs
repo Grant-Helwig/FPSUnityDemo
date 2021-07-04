@@ -11,10 +11,17 @@ public class InputHandler : MonoBehaviour
     public bool is_grappling;
     public Vector3 move_input;
     public Vector2 mouse_delta;
+
+    private PlayerInput playerInput;
+    private PlayerInputManager playerInputManager;
+    public Camera UICamera;
     // Start is called before the first frame update
     void Start()
     {
         is_grappling = false;
+        playerInput = GetComponent<PlayerInput>();
+        playerInputManager = GetComponent<PlayerInputManager>();
+        UICamera.enabled = false;
     }
 
     // Update is called once per frame
@@ -46,5 +53,24 @@ public class InputHandler : MonoBehaviour
         
         // Account for sensitivity setting on old Mouse X and Y axes.
         mouse_delta *= 0.1f;
+    }
+
+    void OnPlayerCancel(InputValue value){
+        playerInput.SwitchCurrentActionMap("UI");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        UICamera.enabled = true;
+    }
+
+    void OnCancel(InputValue value){
+        playerInput.SwitchCurrentActionMap("Player");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        UICamera.enabled = false;
+    }
+
+    public void EndGame(){
+        print("quit");
+        Application.Quit();
     }
 }

@@ -87,7 +87,6 @@ public class CharacterCollisions : MonoBehaviour
 
             return true && !SlopeLimitCheck(last_wall_normal);
         }  else {
-            print("not on wall");
             return false;
         }
     }

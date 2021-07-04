@@ -9,10 +9,12 @@ using RootMotion.FinalIK;
 public class Character : MonoBehaviour
 {
   public Transform testPosition;
-    [Header("General Variables")]
+    //[Header("General Variables")]
     [SerializeField]
-    [Tooltip("General mouse sensitivity")]
+    //[Tooltip("General mouse sensitivity")]
+    //private float mouseSensitivity;
     private float mouseSensitivity = 1.0f;
+    public float MouseSensitivity { get { return mouseSensitivity; } set { mouseSensitivity = value; } }
     [SerializeField]
     [Tooltip("Ratio of camera height compared to the character collider")]
     [Range(0,1)]
@@ -560,6 +562,11 @@ public class Character : MonoBehaviour
     public void SetAnimation(Anim index){
       animator.SetInteger("Change", ((int)index));
       curAnimState = index;
+    }
+
+    public void SetSenitivity(float val){
+      print("SENSITIVITY CHANGED");
+      mouseSensitivity = val;
     }
     
     private void Awake() {

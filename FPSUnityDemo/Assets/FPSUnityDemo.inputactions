@@ -60,6 +60,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "PlayerCancel",
+                    "type": "Button",
+                    "id": "b2ece18a-feac-46ff-ae73-8b26a7926f54",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -346,6 +354,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "GrappleUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c6fb1baf-8c35-464c-b928-c0dd022b9b7d",
+                    "path": "*/{Cancel}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayerCancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
