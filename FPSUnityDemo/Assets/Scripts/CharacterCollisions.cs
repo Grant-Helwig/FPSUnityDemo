@@ -8,6 +8,7 @@ public class CharacterCollisions : MonoBehaviour
     public bool on_wall;
     public bool facing_wall;
     public bool on_ground; 
+    public bool on_ceiling; 
     public Vector3 ground_slope; 
     public Vector3 last_wall_position;
     public Vector3 last_wall_normal;
@@ -49,6 +50,7 @@ public class CharacterCollisions : MonoBehaviour
     private void Update() {
         on_wall = WallCheck();
         on_ground = GroundCheck();
+        on_ceiling = CeilingCheck();
         //facing_wall = FacingWallCheck();
     }
 
@@ -128,6 +130,15 @@ public class CharacterCollisions : MonoBehaviour
         }
         return false;
     }
+
+    public bool CeilingCheck(){
+        float ceiling_check_dist = (controller.skinWidth + .5f);
+        if(Physics.CapsuleCast(BottomHemisphere(), TopHemisphere(controller.height), controller.radius, Vector3.up, out ground_hit, ceiling_check_dist)){
+            return true;
+        }
+        return false;
+    }
+        
 
     public Vector3 BottomHemisphere(){
         return transform.position + (transform.up * controller.radius);

@@ -215,6 +215,9 @@ public class Character : MonoBehaviour
       horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, max_air_velocity);
       velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
 
+      if(character_collisions.on_ceiling && velocity.y > 0){
+        velocity.y = 0;
+      }
       // now add gravity acceleration
       velocity += Vector3.down * gravity * Time.fixedDeltaTime;
     }
