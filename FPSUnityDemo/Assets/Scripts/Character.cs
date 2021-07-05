@@ -36,32 +36,37 @@ public class Character : MonoBehaviour
     public float MaxCrouchSpeed { get { return maxCrouchSpeed; } set { maxCrouchSpeed = value; } }
     [SerializeField]
     private float crouchAccSpeed = 1.0f;
-    public float CrouchAccSpeed { get { return crouchAccSpeed; } set { crouchAccSpeed = value; }
+    public float CrouchAccSpeed { get { return crouchAccSpeed; } set { crouchAccSpeed = value; } }
     [SerializeField]
     private float crouchSharpness = 10f;
-    public float CrouchSharpness { get { return crouchSharpness; } set { crouchSharpness = value; }
+    public float CrouchSharpness { get { return crouchSharpness; } set { crouchSharpness = value; } }
     [SerializeField]
     private float maxSlideSpeed = 1.0f;
-    public float MaxSlideSpeed { get { return maxSlideSpeed; } set { maxSlideSpeed = value; }
+    public float MaxSlideSpeed { get { return maxSlideSpeed; } set { maxSlideSpeed = value; } }
     [SerializeField]
     private float minSlideSpeed = 1.0f;
-    public float MinSlideSpeed { get { return minSlideSpeed; } set { minSlideSpeed = value; }
+    public float MinSlideSpeed { get { return minSlideSpeed; } set { minSlideSpeed = value; } }
     [SerializeField]
     private float slideAccSpeed = 1.0f;
-    public float SlideAccSpeed { get { return slideAccSpeed; } set { slideAccSpeed = value; }
+    public float SlideAccSpeed { get { return slideAccSpeed; } set { slideAccSpeed = value; } }
     [Header("Air Movement Variables")]
     [SerializeField]
     private float gravity = 1.0f;
+    public float Gravity { get { return gravity; } set { gravity = value; } }
     [SerializeField]
     private float maxAirSpeed = 1.0f;
+    public float MaxAirSpeed { get { return maxAirSpeed; } set { maxAirSpeed = value; } }
     [SerializeField]
     private float airAcc = 1.0f;
-    
+    public float AirAcc { get { return airAcc; } set { airAcc = value; } }
     [Header("Wall Movement Variables")]
     [SerializeField]
     private float wallSpeedMod = 1.0f;
+    public float WallSpeedMod { get { return wallSpeedMod; } set { wallSpeedMod = value; } }
     [SerializeField]
     private float wallRunGravity = 1.0f;
+    [SerializeField]
+    private float wallRunAccSpeed = 1.0f;
     
     [SerializeField]
     private float maxClimbSpeed = 1.0f;
@@ -205,13 +210,16 @@ public class Character : MonoBehaviour
       
       //take slop into account
       Vector3 slope_direction = Vector3.ProjectOnPlane(input_direction, character_collisions.ground_slope);
+
       //Get the speed you want to get to 
       Vector3 target_velocity = slope_direction * maxRunSpeed * speed_mod;
+
       //Smoothly transition to that velocity 
       velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
     }
 
     public void AirMovement(){
+      //allow faster vectoring if the user is holding sprint, optional  
       speed_mod = input_handler.is_sprinting ? 1.3f : 1f;
       
       //Add the air acceleration to the velocity
@@ -219,15 +227,27 @@ public class Character : MonoBehaviour
 
       //clamp sideways velocity, keep upward velocity
       float vertical_velocity = velocity.y;
+      
+      //project current velocity on a sideways plane
       Vector3 horizontal_velocity = Vector3.ProjectOnPlane(velocity, Vector3.up);
+      
+      //if the speed when you started to fall is faster than the max air speed, use the max air speed
       float max_air_velocity = Mathf.Min(last_falling_speed,maxAirSpeed);
+      
+      //if the max air speed was slower than the run speed, all the user to speed up still  
       max_air_velocity = Mathf.Max(max_air_velocity, maxRunSpeed);
+
+      // clamp the velocity to that magnitude value 
       horizontal_velocity = Vector3.ClampMagnitude(horizontal_velocity, max_air_velocity);
+      
+      //apply horizontal and veritcal velocity
       velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
 
+      //use case for hitting ceilings, dont want to accumulate velocity 
       if(character_collisions.on_ceiling && velocity.y > 0){
         velocity.y = 0;
       }
+
       // now add gravity acceleration
       velocity += Vector3.down * gravity * Time.fixedDeltaTime;
     }
@@ -238,23 +258,57 @@ public class Character : MonoBehaviour
     public void WallRun(){
       //get the wall normal, needs to be set for jumping
       wall_hit_normal = character_collisions.WallHitNormal();
+
       //get the orthogonal vector from the wall compared to UP 
       orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
 
+      //Keep upward velocity if it positive
       if(velocity.y > 0){
-        //Keep upward velocity if it positive
+        
+        // save the current upward velocity
         float vertical_velocity = velocity.y;
-        Vector3 horizontal_velocity = Vector3.ProjectOnPlane(orthogonal_wall_vector * wall_direction * wallSpeedMod, Vector3.up);
-        velocity = horizontal_velocity + (Vector3.up * vertical_velocity);
+
+        //project the horizontal velocity
+        Vector3 horizontal_velocity = new Vector3(velocity.x, 0 ,velocity.z);
+        horizontal_velocity = Vector3.ProjectOnPlane(horizontal_velocity, wall_hit_normal);
+  
+        //calculate the velocity we want horizontally
+        Vector3 target_velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
+
+        //accelerate horizontally while keeping vertical accelearion
+        velocity = Vector3.Lerp(horizontal_velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime) + (Vector3.up * vertical_velocity);
       } else{
-        //make the velocity equal the correct direction and add the wall speed modifier 
-        velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
+        
+        //make the velocity equal the correct direction and add the wall speed modifier   
+        Vector3 target_velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
+        velocity = Vector3.Lerp(velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime);
       }     
 
       // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
+    }
+
+    public void SetWallRunValues(){
+      //this timer determines when wall run will end      
+      wallRunDurationTimer.StartTimer();
+
+      //get current current forward direction for character
+      Vector3 along_wall = transform.TransformDirection(Vector3.forward);
+
+      //get the wall normal, needs to be set for jumping
+      wall_hit_normal = character_collisions.WallHitNormal();
+
+      //get the orthogonal vector from the wall compared to UP 
+      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
       
-      //velocity += wall_hit_normal * -1;
+      //use the dot product to determine which direction the player is facing on the wall
+      wall_direction = Vector3.Dot(along_wall, orthogonal_wall_vector) < 0 ? -1 : 1; 
+
+      //snap to wall or else you get very inconsistent wall running 
+      controller.Move((wall_hit_normal * -1) * (Vector3.Distance(transform.position,character_collisions.last_wall_position)- controller.radius));
+
+      //put the character valocity along wall, needed incase velocity is too strong to keep on wall and helps with other calculations
+      velocity = (velocity.x * (orthogonal_wall_vector * wall_direction).normalized) + (Vector3.up * velocity.y);
     }
 
     public void EnableWallRunArm(){
@@ -278,9 +332,17 @@ public class Character : MonoBehaviour
       return Vector3.Dot(lastWallNormal, character_collisions.WallHitNormal());
     }
     public void WallClimb(){
-      //Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * maxClimbSpeed;
-      Vector3 target_velocity =  Vector3.up * maxClimbSpeed;
+      //calculate which way to climb by using the up vector projected on the wall
+      Vector3 target_velocity = Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * maxClimbSpeed;
       velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
+    }
+    public void SetWallClimbValues(){    
+      wallClimbDurationTimer.StartTimer();
+      //get the wall normal, needs to be set for jumping
+      wall_hit_normal = character_collisions.WallHitNormal();
+
+      //get the orthogonal vector from the wall compared to UP 
+      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
     }
 
     public void SlideMovement(){
@@ -350,33 +412,6 @@ public class Character : MonoBehaviour
     public void ResetSlideTimer(){
       slideTimerSet = false;
       slideTimer.StopTimer();
-    }
-
-    public void SetWallRunValues(){      
-      wallRunDurationTimer.StartTimer();
-      //get current current forward direction for character
-      Vector3 along_wall = transform.TransformDirection(Vector3.forward);
-
-      //get the wall normal, needs to be set for jumping
-      wall_hit_normal = character_collisions.WallHitNormal();
-
-      //get the orthogonal vector from the wall compared to UP 
-      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
-      
-      //use the dot product to determine which direction the player is facing on the wall
-      wall_direction = Vector3.Dot(along_wall, orthogonal_wall_vector) < 0 ? -1 : 1; 
-
-      //snap to wall or else you get very inconsistent wall running 
-      controller.Move((wall_hit_normal * -1) * (Vector3.Distance(transform.position,character_collisions.last_wall_position)- controller.radius));
-    }
-
-    public void SetWallClimbValues(){    
-      wallClimbDurationTimer.StartTimer();
-      //get the wall normal, needs to be set for jumping
-      wall_hit_normal = character_collisions.WallHitNormal();
-
-      //get the orthogonal vector from the wall compared to UP 
-      orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
     }
 
     public void WallJump(){
