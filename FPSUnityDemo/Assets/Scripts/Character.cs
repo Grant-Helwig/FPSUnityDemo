@@ -205,6 +205,7 @@ public class Character : MonoBehaviour
     private int grappleDirection;
     public Vector3 lastWallNormal = Vector3.zero;
     public Anim curAnimState;
+
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
       //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));

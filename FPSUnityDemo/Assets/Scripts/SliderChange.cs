@@ -7,8 +7,9 @@ using UnityEngine.EventSystems;
 
 public class SliderChange : MonoBehaviour {
     [System.Serializable]
-     public class OnValueChanged : UnityEvent<float> { };
-     public OnValueChanged selectedEvent;
+    public class OnValueChanged : UnityEvent<float> { };
+    public OnValueChanged selectedEvent;
+    public OnValueChanged defaultVal;
     Slider slider; // The slider this script is attached to
 
     public Text attachedValue; // The Text Label I want to change with the slider
