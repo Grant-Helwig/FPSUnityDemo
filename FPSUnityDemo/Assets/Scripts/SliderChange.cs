@@ -13,7 +13,8 @@ public class SliderChange : MonoBehaviour {
     //public UnityEvent<float> selectedEvent;
 
     public Text attachedValue; // The Text Label I want to change with the slider
-	public void Awake(){
+
+    public void Awake(){
         Character player = GameObject.Find("Player").GetComponent<Character>();
 		slider = GetComponent<Slider> (); // Grab the Slider
         // The line below ALL OF THESE COMMENTS is important: we tell the Slider that

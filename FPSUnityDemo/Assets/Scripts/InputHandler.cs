@@ -15,6 +15,7 @@ public class InputHandler : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerInputManager playerInputManager;
     public Camera UICamera;
+    public Camera PlayerCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +61,7 @@ public class InputHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         UICamera.enabled = true;
+        PlayerCamera.enabled = false;
     }
 
     void OnCancel(InputValue value){
@@ -67,6 +69,7 @@ public class InputHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         UICamera.enabled = false;
+        PlayerCamera.enabled = true;
     }
 
     public void EndGame(){
