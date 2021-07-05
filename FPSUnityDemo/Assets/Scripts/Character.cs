@@ -28,21 +28,27 @@ public class Character : MonoBehaviour
     public float RunAccSpeed { get { return runAccSpeed; } set { runAccSpeed = value; } }
     [SerializeField]
     private float jumpForce = 1.0f;
+    public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
     public Animator animator;
     [Header("Sliding Variables")]
     [SerializeField]
     private float maxCrouchSpeed = 1.0f;
+    public float MaxCrouchSpeed { get { return maxCrouchSpeed; } set { maxCrouchSpeed = value; } }
     [SerializeField]
     private float crouchAccSpeed = 1.0f;
+    public float CrouchAccSpeed { get { return crouchAccSpeed; } set { crouchAccSpeed = value; }
     [SerializeField]
     private float crouchSharpness = 10f;
+    public float CrouchSharpness { get { return crouchSharpness; } set { crouchSharpness = value; }
     [SerializeField]
     private float maxSlideSpeed = 1.0f;
+    public float MaxSlideSpeed { get { return maxSlideSpeed; } set { maxSlideSpeed = value; }
     [SerializeField]
     private float minSlideSpeed = 1.0f;
+    public float MinSlideSpeed { get { return minSlideSpeed; } set { minSlideSpeed = value; }
     [SerializeField]
     private float slideAccSpeed = 1.0f;
-    
+    public float SlideAccSpeed { get { return slideAccSpeed; } set { slideAccSpeed = value; }
     [Header("Air Movement Variables")]
     [SerializeField]
     private float gravity = 1.0f;
