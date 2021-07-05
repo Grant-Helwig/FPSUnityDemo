@@ -12,10 +12,8 @@ public class WallRunningState : State
     {
         base.Enter();
         character.SetDebugText( "Wall Run");
-        MonoBehaviour.print(character.GetWallDifference());
         character.SetAnimation(Anim.Running);
         character.EnableWallRunArm();
-        //MonoBehaviour.print("dir: " + character.velocity.normalized);
     }
     public override void Exit()
     {
@@ -23,7 +21,6 @@ public class WallRunningState : State
         character.wallRunDurationTimer.StopTimer();
         character.EndWallRun();
         character.DisableWallRunArms();
-        //MonoBehaviour.print("dir: " + character.velocity.normalized);
     }
 
     public override void HandleInput()
@@ -34,19 +31,15 @@ public class WallRunningState : State
     {
         base.LogicUpdate();
         if(character.controller.isGrounded){
-            MonoBehaviour.print("hit ground");
             state_machine.ChangeState(character.running_state);
         } else if(!character.wallRunDurationTimer.is_active){
-            MonoBehaviour.print("timer ended");
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } else if(character.can_jump){
-            MonoBehaviour.print("jump");
             //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
         }else if(!character.character_collisions.on_wall ||character.input_handler.move_input.z < .5f){
-            MonoBehaviour.print("collisions: " + !character.character_collisions.on_wall + " input: " + (character.input_handler.move_input.z < .5f));
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } 

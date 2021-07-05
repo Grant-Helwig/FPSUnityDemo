@@ -9,10 +9,9 @@ using RootMotion.FinalIK;
 public class Character : MonoBehaviour
 {
   public Transform testPosition;
-    //[Header("General Variables")]
+    [Header("General Variables")]
     [SerializeField]
-    //[Tooltip("General mouse sensitivity")]
-    //private float mouseSensitivity;
+    [Tooltip("General mouse sensitivity")]
     private float mouseSensitivity = 1.0f;
     public float MouseSensitivity { get { return mouseSensitivity; } set { mouseSensitivity = value; } }
     [SerializeField]
@@ -21,26 +20,45 @@ public class Character : MonoBehaviour
     private float cameraHeightRatio = .9f;
     [Header("Running Variables")]
     [SerializeField]
+    [Tooltip("Max Speed of Player Running")]
+    [Range(5,30)]
     private float maxRunSpeed = 1.0f;
     public float MaxRunSpeed { get { return maxRunSpeed; } set { maxRunSpeed = value; } }
     [SerializeField]
+    [Tooltip("How fast the Player speeds up")]
+    [Range(5,30)]
     private float runAccSpeed = 1.0f;
     public float RunAccSpeed { get { return runAccSpeed; } set { runAccSpeed = value; } }
     [SerializeField]
+    [Tooltip("How fast the Player slows down")]
+    [Range(5,30)]
+    private float runDecSpeed = 1.0f;
+    public float RunDecSpeed { get { return runDecSpeed; } set { runDecSpeed = value; } }
+    [SerializeField]
+    [Tooltip("Force of Player Jump")]
+    [Range(5,30)]
     private float jumpForce = 1.0f;
     public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
     public Animator animator;
     [Header("Sliding Variables")]
     [SerializeField]
+    [Tooltip("Max speed when crouching")]
+    [Range(5,30)]
     private float maxCrouchSpeed = 1.0f;
     public float MaxCrouchSpeed { get { return maxCrouchSpeed; } set { maxCrouchSpeed = value; } }
     [SerializeField]
+    [Tooltip("How fast the player accelerates to crouching speed")]
+    [Range(5,30)]
     private float crouchAccSpeed = 1.0f;
     public float CrouchAccSpeed { get { return crouchAccSpeed; } set { crouchAccSpeed = value; } }
     [SerializeField]
+    [Tooltip("How fast the collider / camera transition to crouching height")]
+    [Range(5,30)]
     private float crouchSharpness = 10f;
     public float CrouchSharpness { get { return crouchSharpness; } set { crouchSharpness = value; } }
     [SerializeField]
+    [Tooltip("Maximum speed when sliding")]
+    [Range(5,30)]
     private float maxSlideSpeed = 1.0f;
     public float MaxSlideSpeed { get { return maxSlideSpeed; } set { maxSlideSpeed = value; } }
     [SerializeField]
@@ -59,7 +77,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private float airAcc = 1.0f;
     public float AirAcc { get { return airAcc; } set { airAcc = value; } }
-    [Header("Wall Movement Variables")]
+    [Header("Wall Run Variables")]
     [SerializeField]
     private float wallSpeedMod = 1.0f;
     public float WallSpeedMod { get { return wallSpeedMod; } set { wallSpeedMod = value; } }
@@ -67,12 +85,29 @@ public class Character : MonoBehaviour
     private float wallRunGravity = 1.0f;
     [SerializeField]
     private float wallRunAccSpeed = 1.0f;
-    
-    [SerializeField]
-    private float maxClimbSpeed = 1.0f;
     [SerializeField]
     private float angleRollSpeed = 1.0f;
     public float fixedAngleRollDuration = 1.0f;
+    [Header("Wall Climb Variables")]
+    [SerializeField]
+    private float maxClimbSpeed = 1.0f;
+    [Header("Grapple Variables")]
+    [SerializeField]
+    private float maxGrappleDistance;
+    [SerializeField]
+    private LayerMask grappleMask;
+    [SerializeField]
+    private float maxGrappleSpeed;
+    [SerializeField]
+    private float grappleAcc;
+    [SerializeField]
+    private float minGrappleSpeed;
+    [SerializeField]
+    private float grappleAngularAcc;
+    [SerializeField]
+    private float forwardMod;
+    [SerializeField]
+    private float sidewaysMod;
     [Header("Timer Variables")]
     [SerializeField]
     private float slideTime;
@@ -95,23 +130,7 @@ public class Character : MonoBehaviour
     public State wall_climbing_state;
     public State grappling_state;
     public StateMachine movement_machine;
-    [Header("Grapple Variables")]
-    [SerializeField]
-    private float maxGrappleDistance;
-    [SerializeField]
-    private LayerMask grappleMask;
-    [SerializeField]
-    private float maxGrappleSpeed;
-    [SerializeField]
-    private float grappleAcc;
-    [SerializeField]
-    private float minGrappleSpeed;
-    [SerializeField]
-    private float grappleAngularAcc;
-    [SerializeField]
-    private float forwardMod;
-    [SerializeField]
-    private float sidewaysMod;
+    
     [Header("Other Variables")]
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
@@ -215,7 +234,12 @@ public class Character : MonoBehaviour
       Vector3 target_velocity = slope_direction * maxRunSpeed * speed_mod;
 
       //Smoothly transition to that velocity 
-      velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
+      if(Mathf.Approximately(slope_direction.magnitude, 0f)){
+        velocity = Vector3.Lerp(velocity, Vector3.zero, runDecSpeed * Time.fixedDeltaTime);
+      } else { 
+        velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
+      }
+      
     }
 
     public void AirMovement(){
@@ -588,14 +612,12 @@ public class Character : MonoBehaviour
     }
     
     void OnGrappleDown(){
-        print("grappled");
         if(movement_machine.cur_state != grappling_state && !GrappleCooldownTimer.is_active){
           stopGrapple = false;
           movement_machine.ChangeState(grappling_state);
         }
     }
     void OnGrappleUp(){
-        print("stop grapple");
         if(movement_machine.cur_state == grappling_state){
           stopGrapple = true;
           GrappleCooldownTimer.StartTimer();
@@ -608,7 +630,6 @@ public class Character : MonoBehaviour
     }
 
     public void SetSenitivity(float val){
-      print("SENSITIVITY CHANGED");
       mouseSensitivity = val;
     }
     
@@ -698,4 +719,4 @@ public class Character : MonoBehaviour
     }
 }
 
-public enum Anim : int{Idle, Running, Sliding, Falling}
+public enum Anim : int{Idle, Running, Sliding, Falling, Climbing}

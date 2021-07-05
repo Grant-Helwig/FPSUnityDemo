@@ -32,10 +32,8 @@ public class RunningState : State
     public override void LogicUpdate()
     {
         if(character.velocity.magnitude < 2f && character.curAnimState != Anim.Idle){
-            MonoBehaviour.print("chill");
             character.SetAnimation(Anim.Idle);
         } else if(character.velocity.magnitude >= 2f && character.curAnimState != Anim.Running) {
-            MonoBehaviour.print("runnnn");
             character.SetAnimation(Anim.Running);
         }
         base.LogicUpdate();
