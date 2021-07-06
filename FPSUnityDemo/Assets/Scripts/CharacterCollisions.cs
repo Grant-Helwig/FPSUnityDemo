@@ -9,6 +9,7 @@ public class CharacterCollisions : MonoBehaviour
     public bool facing_wall;
     public bool on_ground; 
     public bool on_ceiling; 
+    public float wall_angle;
     public Vector3 ground_slope; 
     public Vector3 last_wall_position;
     public Vector3 last_wall_normal;
@@ -31,12 +32,12 @@ public class CharacterCollisions : MonoBehaviour
         wall_directions = new Vector3[]{ 
             Vector3.right, 
             Vector3.right + Vector3.forward,
-            //Vector3.right + Vector3.back,
+            Vector3.right + Vector3.back,
             Vector3.forward, 
             Vector3.left + Vector3.forward, 
-            //Vector3.left + Vector3.back, 
-            Vector3.left//,
-            //Vector3.back
+            Vector3.left + Vector3.back, 
+            Vector3.left,
+            Vector3.back
         };
         facing_wall_directions = new Vector3[]{ 
             Vector3.right + Vector3.forward,
@@ -83,7 +84,8 @@ public class CharacterCollisions : MonoBehaviour
 
             Vector3 along_wall = transform.TransformDirection(Vector3.forward);
             Vector3 orthogonal_wall_vector = Vector3.Cross(last_wall_normal, Vector3.up);
-            facing_wall = Vector3.Dot(along_wall, orthogonal_wall_vector) < .35f && Vector3.Dot(along_wall, orthogonal_wall_vector) > -.35f  ? true : false;
+            wall_angle = Vector3.Dot(along_wall, last_wall_normal);
+            facing_wall = wall_angle < -.7f ? true : false;
 
             return true && !SlopeLimitCheck(last_wall_normal);
         }  else {

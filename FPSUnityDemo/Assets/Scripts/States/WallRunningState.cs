@@ -30,19 +30,25 @@ public class WallRunningState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
         if(character.controller.isGrounded){
             state_machine.ChangeState(character.running_state);
         } else if(!character.wallRunDurationTimer.is_active){
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
         } else if(character.can_jump){
-            //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
-        }else if(!character.character_collisions.on_wall ||character.input_handler.move_input.z < .5f){
+        }else if(!character.character_collisions.on_wall || Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal) > .6){//character.input_handler.move_input.z < .5f){ // change this to be slightly towards wall instead of just relative forward 
+            MonoBehaviour.print("not aiming towards wall : " + Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal));
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);
-        } 
+        } else if(character.character_collisions.wall_angle < -.6 
+        && Mathf.Sign(character.cur_wall_direction) != Mathf.Sign(character.wall_direction)){
+            MonoBehaviour.print("going wrong way :  current way" + character.character_collisions.wall_angle);
+            character.can_wall_run = false; 
+            state_machine.ChangeState(character.falling_state);
+        }
     }
     public override void PhysicsUpdate()
     {

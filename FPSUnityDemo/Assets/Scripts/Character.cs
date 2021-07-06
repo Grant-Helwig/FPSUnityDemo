@@ -82,6 +82,8 @@ public class Character : MonoBehaviour
     private float wallSpeedMod = 1.0f;
     public float WallSpeedMod { get { return wallSpeedMod; } set { wallSpeedMod = value; } }
     [SerializeField]
+    private float maxBackToWallSpeed = 1.0f;
+    [SerializeField]
     private float wallRunGravity = 1.0f;
     [SerializeField]
     private float wallRunAccSpeed = 1.0f;
@@ -172,6 +174,7 @@ public class Character : MonoBehaviour
     private Vector3 wall_hit_normal;
     private Vector3 orthogonal_wall_vector;
     public int wall_direction;
+    public int cur_wall_direction;
     private float speed_mod = 1.0f;
     private float last_slide_speed;
     private Vector3 last_slide_direction;
@@ -287,6 +290,7 @@ public class Character : MonoBehaviour
       //get the orthogonal vector from the wall compared to UP 
       orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
 
+      cur_wall_direction = Vector3.Dot(transform.TransformDirection(Vector3.forward), orthogonal_wall_vector) < 0 ? -1 : 1; 
       //Keep upward velocity if it positive
       if(velocity.y > 0){
         
@@ -296,19 +300,32 @@ public class Character : MonoBehaviour
         //project the horizontal velocity
         Vector3 horizontal_velocity = new Vector3(velocity.x, 0 ,velocity.z);
         horizontal_velocity = Vector3.ProjectOnPlane(horizontal_velocity, wall_hit_normal);
-  
+
         //calculate the velocity we want horizontally
         Vector3 target_velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
 
+        //clamp the horizontal velocity if your back is against the wall
+        if(character_collisions.wall_angle > .6){
+          
+          Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
+        }
+
         //accelerate horizontally while keeping vertical accelearion
         velocity = Vector3.Lerp(horizontal_velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime) + (Vector3.up * vertical_velocity);
-      } else{
+      } else {
         
         //make the velocity equal the correct direction and add the wall speed modifier   
         Vector3 target_velocity = orthogonal_wall_vector * wall_direction * wallSpeedMod;
+
+        //clamp the horizontal velocity if your back is against the wall
+        if(character_collisions.wall_angle > .6){
+          print("not facing wall");
+          Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
+        }
+
         velocity = Vector3.Lerp(velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime);
       }     
-
+      
       // now apply gravity so there is a downward arc 
       velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
     }
@@ -717,6 +734,7 @@ public class Character : MonoBehaviour
       if(debug_speed != null){
         debug_speed.text =  ((int)(((new Vector3(velocity.x, 0 , velocity.z).magnitude / 1000) * 60) * 60)).ToString();
       }
+      print(Vector3.Dot(input_direction, character_collisions.last_wall_normal));
     }
 }
 
