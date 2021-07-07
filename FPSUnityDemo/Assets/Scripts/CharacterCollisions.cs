@@ -15,6 +15,7 @@ public class CharacterCollisions : MonoBehaviour
     public Vector3 last_wall_normal;
     public Vector3 last_facing_wall_position;
     public Vector3 last_facing_wall_normal;
+    public LayerMask mask;
     Vector3[] wall_directions;
     Vector3[] facing_wall_directions;
     RaycastHit[] wall_hits;
@@ -65,7 +66,7 @@ public class CharacterCollisions : MonoBehaviour
         for(int i=0; i<wall_directions.Length; i++)
         {
             Vector3 dir = transform.TransformDirection(wall_directions[i]);
-            Physics.Raycast(lower_body_position, dir, out wall_hits[i], max_wall_dist);
+            Physics.Raycast(lower_body_position, dir, out wall_hits[i], max_wall_dist, mask);
             if(wall_hits[i].collider != null)
             {
                 Debug.DrawRay(lower_body_position, dir * wall_hits[i].distance, Color.green);
@@ -89,6 +90,7 @@ public class CharacterCollisions : MonoBehaviour
 
             return true && !SlopeLimitCheck(last_wall_normal);
         }  else {
+            last_wall_normal = Vector3.zero;
             return false;
         }
     }

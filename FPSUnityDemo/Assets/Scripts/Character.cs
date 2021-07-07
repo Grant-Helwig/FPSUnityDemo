@@ -734,7 +734,7 @@ public class Character : MonoBehaviour
       if(debug_speed != null){
         debug_speed.text =  ((int)(((new Vector3(velocity.x, 0 , velocity.z).magnitude / 1000) * 60) * 60)).ToString();
       }
-      print(Vector3.Dot(input_direction, character_collisions.last_wall_normal));
+      //print(Vector3.Dot(input_direction, character_collisions.last_wall_normal) + " | " +input_direction + " | " +  character_collisions.last_wall_normal);
     }
 }
 
