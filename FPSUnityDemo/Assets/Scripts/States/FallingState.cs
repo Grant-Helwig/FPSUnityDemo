@@ -40,8 +40,8 @@ public class FallingState : State
             } else {
                 state_machine.ChangeState(character.running_state);
             }
-        //transition to wall states 
-        } else if(character.character_collisions.on_wall){
+        //transition to wall states, use coyote timer to not snap to ledges when falling 
+        } else if(character.character_collisions.on_wall && !character.jumpCooldownTimer.is_active){
             //can wall run is reset when touching the ground, always allow wall states after this
             if(character.GetWallDifference() <= .7f  && character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
                 character.SetWallRunValues();
