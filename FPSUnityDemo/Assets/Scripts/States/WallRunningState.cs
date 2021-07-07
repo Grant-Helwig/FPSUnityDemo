@@ -39,7 +39,9 @@ public class WallRunningState : State
         } else if(character.can_jump){
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
-        }else if(!character.character_collisions.on_wall || Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal) > .6){//character.input_handler.move_input.z < .5f){ // change this to be slightly towards wall instead of just relative forward 
+        }else if(!character.character_collisions.on_wall 
+        || Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal) > .6
+        || Mathf.Approximately(character.input_direction.magnitude,0)){//character.input_handler.move_input.z < .5f){ // change this to be slightly towards wall instead of just relative forward 
             //MonoBehaviour.print("not aiming towards wall : " + character.character_collisions.wall_hits[0].collider.gameObject.name); // Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal));
             character.can_wall_run = false; 
             state_machine.ChangeState(character.falling_state);

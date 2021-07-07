@@ -125,7 +125,7 @@ public class CharacterCollisions : MonoBehaviour
 
     public bool GroundCheck(){
         float chosen_ground_check_dist = on_ground ? (controller.skinWidth + ground_check_dist) : .05f;
-        if(Physics.CapsuleCast(BottomHemisphere(), TopHemisphere(controller.height), controller.radius, Vector3.down, out ground_hit, chosen_ground_check_dist)){
+        if(Physics.CapsuleCast(BottomHemisphere(), TopHemisphere(controller.height), controller.radius, Vector3.down, out ground_hit, chosen_ground_check_dist, mask)){
             ground_slope = ground_hit.normal;
             if (Vector3.Dot(ground_slope, transform.up) > 0f && SlopeLimitCheck(ground_slope)){
                 return true;
@@ -136,7 +136,7 @@ public class CharacterCollisions : MonoBehaviour
 
     public bool CeilingCheck(){
         float ceiling_check_dist = (controller.skinWidth + .5f);
-        if(Physics.CapsuleCast(BottomHemisphere(), TopHemisphere(controller.height), controller.radius, Vector3.up, out ground_hit, ceiling_check_dist)){
+        if(Physics.CapsuleCast(BottomHemisphere(), TopHemisphere(controller.height), controller.radius, Vector3.up, out ground_hit, ceiling_check_dist, mask)){
             return true;
         }
         return false;

@@ -307,7 +307,7 @@ public class Character : MonoBehaviour
         //clamp the horizontal velocity if your back is against the wall
         if(character_collisions.wall_angle > .6){
           
-          Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
+          target_velocity = Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
         }
 
         //accelerate horizontally while keeping vertical accelearion
@@ -319,8 +319,9 @@ public class Character : MonoBehaviour
 
         //clamp the horizontal velocity if your back is against the wall
         if(character_collisions.wall_angle > .6){
-          print("not facing wall");
-          Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
+          print("before: " + target_velocity.magnitude);
+          target_velocity = Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
+          print("after: " + target_velocity.magnitude);
         }
 
         velocity = Vector3.Lerp(velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime);
