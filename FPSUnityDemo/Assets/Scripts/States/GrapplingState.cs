@@ -40,19 +40,19 @@ public class GrapplingState : State
                     state_machine.ChangeState(character.running_state);
                 }
             //transition to wall states 
-            } else if(character.character_collisions.on_wall){
+            } else if(character.character_collisions.on_wall && !character.jumpCooldownTimer.is_active
+            && Vector3.Dot(character.input_direction, character.character_collisions.last_wall_normal) <= .6
+            && !Mathf.Approximately(character.input_direction.magnitude,0)){
                 //can wall run is reset when touching the ground, always allow wall states after this
-                if(character.GetWallDifference() <= .7f && character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
+                if(character.GetWallDifference() <= .7f  && character.can_wall_run && !character.wallJumpCooldownTimer.is_active){
                     character.SetWallRunValues();
                     if(character.character_collisions.facing_wall){
                         state_machine.ChangeState(character.wall_climbing_state);
                     } else {
                         state_machine.ChangeState(character.wall_running_state);
                     }
-                } else {
-                    state_machine.ChangeState(character.falling_state);
-                }
-            } else {
+                } 
+        } else {
                 state_machine.ChangeState(character.falling_state);
             }
         }

@@ -18,6 +18,8 @@ public class WallClimbingState : State
     {
         base.Exit();
         character.wallClimbDurationTimer.StopTimer();
+        character.wallRunDurationTimer.StopTimer();
+        character.EndWallRun();
     }
 
     public override void HandleInput()
