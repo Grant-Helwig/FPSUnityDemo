@@ -31,6 +31,8 @@ public class Timer : MonoBehaviour
 
     public void StopTimer(){
         if(wait_routine != null){
+            cur_time = 0f;
+            time_counter = 0f;
             StopCoroutine(wait_routine);
             is_active = false;
         }
