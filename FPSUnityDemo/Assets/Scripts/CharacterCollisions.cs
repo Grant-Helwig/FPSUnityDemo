@@ -154,4 +154,7 @@ public class CharacterCollisions : MonoBehaviour
     public bool SlopeLimitCheck(Vector3 normal){
         return Vector3.Angle(transform.up, normal) <= controller.slopeLimit;
     }
+    private void OnCollisionEnter(Collision other) {
+        wall_angle = Vector3.Dot(transform.TransformDirection(Vector3.forward), other.contacts[0].point);
+    }
 }
