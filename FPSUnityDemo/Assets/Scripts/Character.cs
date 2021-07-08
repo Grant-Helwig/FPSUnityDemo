@@ -311,6 +311,8 @@ public class Character : MonoBehaviour
 
         //accelerate horizontally while keeping vertical accelearion
         velocity = Vector3.Lerp(horizontal_velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime) + (Vector3.up * vertical_velocity);
+        // now apply gravity so there is a downward arc 
+      velocity += Vector3.down * gravity * Time.fixedDeltaTime;
       } else {
         
         //make the velocity equal the correct direction and add the wall speed modifier   
@@ -322,10 +324,9 @@ public class Character : MonoBehaviour
         }
 
         velocity = Vector3.Lerp(velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime);
+        // now apply gravity so there is a downward arc 
+        velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
       }     
-      
-      // now apply gravity so there is a downward arc 
-      velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
     }
 
     public void SetWallRunValues(){
@@ -348,7 +349,7 @@ public class Character : MonoBehaviour
       controller.Move((wall_hit_normal * -1) * (Vector3.Distance(transform.position,character_collisions.last_wall_position)- controller.radius));
 
       //put the character valocity along wall, needed incase velocity is too strong to keep on wall and helps with other calculations
-      velocity = (velocity.x * (orthogonal_wall_vector * wall_direction).normalized) + (Vector3.up * velocity.y);
+      velocity = ((velocity.x + velocity.z) * (orthogonal_wall_vector * wall_direction).normalized) + (Vector3.up * velocity.y);
     }
 
     public void EnableWallRunArm(){
@@ -519,7 +520,7 @@ public class Character : MonoBehaviour
       
       Vector3 target_linear_velocity = grapple_dir * 3;
       //if the player is aiming within 90 degrees of grapple point
-      if(grapple_angle > .3f){
+      if( grapple_angle > .7f){
         //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
         target_sideways_velocity = forward_dir * maxGrappleSpeed;
         setGrappleDistance = GetGrappleDistance();
