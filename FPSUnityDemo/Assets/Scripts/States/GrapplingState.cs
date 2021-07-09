@@ -29,9 +29,9 @@ public class GrapplingState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        if(character.stopGrapple){ //|| 
-            //character.GetGrappleDistance() < 5f ||
-            //character.GetGrappleAngle()< -.3f){
+        if(character.stopGrapple || 
+            character.GetGrappleDistance() < 5f ||
+            character.GetGrappleAngle()< -.9f){
             if(character.character_collisions.on_ground && !character.jumpCooldownTimer.is_active){
                 if(character.input_handler.is_sliding){
                     character.SetSlideValues();
