@@ -83,27 +83,35 @@ public class Character : MonoBehaviour
     public float WallSpeedMod { get { return wallSpeedMod; } set { wallSpeedMod = value; } }
     [SerializeField]
     private float maxBackToWallSpeed = 1.0f;
+    public float MaxBackToWallSpeed { get { return maxBackToWallSpeed; } set { maxBackToWallSpeed = value; } }
     [SerializeField]
     private float wallRunGravity = 1.0f;
+    public float WallRunGravity { get { return wallRunGravity; } set { wallRunGravity = value; } }
     [SerializeField]
     private float wallRunAccSpeed = 1.0f;
+    public float WallRunAccSpeed { get { return wallRunAccSpeed; } set { wallRunAccSpeed = value; } }
     [SerializeField]
     private float angleRollSpeed = 1.0f;
     public float fixedAngleRollDuration = 1.0f;
     [Header("Wall Climb Variables")]
     [SerializeField]
     private float maxClimbSpeed = 1.0f;
+    public float MaxClimbSpeed { get { return maxClimbSpeed; } set { maxClimbSpeed = value; } }
     [Header("Grapple Variables")]
     [SerializeField]
     private float maxGrappleDistance;
+    public float MaxGrappleDistance { get { return maxGrappleDistance; } set { maxGrappleDistance = value; } }
     [SerializeField]
     private LayerMask grappleMask;
     [SerializeField]
     private float maxGrappleSpeed;
+    public float MaxGrappleSpeed { get { return maxGrappleSpeed; } set { maxGrappleSpeed = value; } }
     [SerializeField]
     private float grappleAcc;
+    public float GrappleAcc { get { return grappleAcc; } set { grappleAcc = value; } }
     [SerializeField]
     private float minGrappleSpeed;
+    public float MinGrappleSpeed { get { return minGrappleSpeed; } set { minGrappleSpeed = value; } }
     [SerializeField]
     private float grappleAngularAcc;
     [SerializeField]
