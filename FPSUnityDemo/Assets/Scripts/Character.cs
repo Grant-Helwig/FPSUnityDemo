@@ -219,7 +219,6 @@ public class Character : MonoBehaviour
 
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
-      //Vector2 mouse_delta = new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
       Vector2 mouse_delta = input_handler.mouse_delta;
 
       //set the y rotation for the camera, user the mouse sensitivity 
@@ -245,7 +244,7 @@ public class Character : MonoBehaviour
       //Get the speed you want to get to 
       Vector3 target_velocity = slope_direction * maxRunSpeed * speed_mod;
 
-      //Smoothly transition to that velocity 
+      //Smoothly transition to that velocity, or slow down to 0. Use different acc modifiers 
       if(Mathf.Approximately(slope_direction.magnitude, 0f)){
         velocity = Vector3.Lerp(velocity, Vector3.zero, runDecSpeed * Time.fixedDeltaTime);
       } else { 
@@ -298,7 +297,9 @@ public class Character : MonoBehaviour
       //get the orthogonal vector from the wall compared to UP 
       orthogonal_wall_vector = Vector3.Cross(wall_hit_normal, Vector3.up);
 
+      //need this for other checks, this is compared to the  inital direction 
       cur_wall_direction = Vector3.Dot(transform.TransformDirection(Vector3.forward), orthogonal_wall_vector) < 0 ? -1 : 1; 
+      
       //Keep upward velocity if it positive
       if(velocity.y > 0){
         
@@ -319,8 +320,9 @@ public class Character : MonoBehaviour
 
         //accelerate horizontally while keeping vertical accelearion
         velocity = Vector3.Lerp(horizontal_velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime) + (Vector3.up * vertical_velocity);
+        
         // now apply gravity so there is a downward arc 
-      velocity += Vector3.down * gravity * Time.fixedDeltaTime;
+        velocity += Vector3.down * gravity * Time.fixedDeltaTime;
       } else {
         
         //make the velocity equal the correct direction and add the wall speed modifier   
@@ -331,7 +333,9 @@ public class Character : MonoBehaviour
           target_velocity = Vector3.ClampMagnitude(target_velocity, maxBackToWallSpeed);
         }
 
+        //accelerate to that target velocity
         velocity = Vector3.Lerp(velocity, target_velocity, wallRunAccSpeed * Time.fixedDeltaTime);
+        
         // now apply gravity so there is a downward arc 
         velocity += Vector3.down * wallRunGravity * Time.fixedDeltaTime;
       }     
@@ -386,7 +390,9 @@ public class Character : MonoBehaviour
       velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
     }
     public void SetWallClimbValues(){    
+      //wall climbing has a duration
       wallClimbDurationTimer.StartTimer();
+      
       //get the wall normal, needs to be set for jumping
       wall_hit_normal = character_collisions.WallHitNormal();
 
@@ -401,37 +407,53 @@ public class Character : MonoBehaviour
       //create values used to determine the slide direction and speed 
       Vector3 slide_direction;
       float slide_speed;
+      
+      //this will be our end velocity and direction that we want
       Vector3 target_velocity; 
+      
       // if we are on flat ground use initial values otherwise calculate slope values
       if(Mathf.Abs(current_slope) < 10){
+        //this makes it so the slide valaues are equal to the initial ones
         slide_direction = last_slide_direction;
         slide_speed = last_slide_speed;
+
+        //if you are sliding onto flat ground, start the timer
         if(!slideTimerSet){
           slideTimer.StartTimer();
           slideTimerSet = true; 
         }
+        //if the timer has stopped and you are still sliding, slow down 
         if(!slideTimer.is_active){
           slide_speed = 1f;
         }
       } else {
+        //if you slide from flat to sloped ground, make it so the timer will reset
         if(slideTimerSet){
           slideTimerSet = false; 
         }
+
         // parallel to ground
         Vector3 ground_orthogonal = Vector3.Cross(transform.up, character_collisions.ground_slope);
+        
         //parallel to ground with the proper slope direction 
         Vector3 slope_orthogonal = Vector3.Cross(ground_orthogonal, character_collisions.ground_slope);
+        
         //parallel to ground with current transform forward 
         slide_direction = Vector3.ProjectOnPlane(velocity.normalized + slope_orthogonal.normalized, character_collisions.ground_slope).normalized; 
 
+        //this takes the minimum slide speed and modifies it by how steep the slope is 
         slide_speed = (1 + (current_slope / controller.slopeLimit)) * minSlideSpeed;
+        
+        //if that value is more than the max slide value, use the max value instead
         slide_speed = Mathf.Min(slide_speed, maxSlideSpeed);
-        //slide_speed =  (1f - character_collisions.ground_slope.y) * );
+        
+        //set these variables to be used for the next calculations
         last_slide_direction = slide_direction;
         last_slide_speed = slide_speed; 
       }
       Debug.DrawRay (transform.position, slide_direction * 10, Color.green);
       
+      //make simple target velocity calculation
       target_velocity = slide_direction * slide_speed;
 
       
@@ -451,7 +473,10 @@ public class Character : MonoBehaviour
     }
 
     public void SetSlideValues(){
+      //this will give an initial burst of speed 
       last_slide_speed = velocity.magnitude * 1.3f;
+
+      //current forward 
       last_slide_direction = transform.TransformDirection(Vector3.forward);
     }
 
@@ -476,8 +501,8 @@ public class Character : MonoBehaviour
       jumpCooldownTimer.StartTimer();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
-      //velocity = new Vector3(velocity.x, 0f, velocity.z);
       velocity = Vector3.ProjectOnPlane(new Vector3(velocity.x, 0f, velocity.z), character_collisions.ground_slope);
+      
       // then, add the jumpSpeed value upwards
       velocity += character_collisions.ground_slope * jumpForce;
     }
@@ -486,8 +511,8 @@ public class Character : MonoBehaviour
       jumpCooldownTimer.StartTimer();
       ResetJumpBuffer();
       // start by canceling out the vertical component of our velocity
-      //velocity = new Vector3(velocity.x, 0f, velocity.z);
       velocity = Vector3.ProjectOnPlane(new Vector3(velocity.x, 0f, velocity.z), Vector3.Cross(character_collisions.WallHitNormal(), Vector3.up));
+      
       // then, add the jumpSpeed value upwards
       velocity += character_collisions.ground_slope * jumpForce;
     }
