@@ -36,16 +36,16 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSettingsRepository.cs" />
-     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\ISettingsRepository.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\Settings.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSettingsProvider.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\PackageSettingsRepository.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\Attributes.cs" />
-     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSettings.cs" />
-     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\ValueWrapper.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSetting.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\SettingsDictionary.cs" />
+     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSettingsRepository.cs" />
+     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\ISettingsRepository.cs" />
+     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\UserSettings.cs" />
+     <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\ValueWrapper.cs" />
      <Compile Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\SettingsGUILayout.cs" />
      <None Include="Library\PackageCache\com.unity.settings-manager@1.0.3\Editor\Unity.Settings.Editor.asmdef" />
     <Reference Include="UnityEngine">
@@ -288,8 +288,14 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.NRefactory">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
+        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -645,14 +651,16 @@
     <Reference Include="System.Xml.XPath.XDocument">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{2af36194-6ef0-1442-2745-a701e52cf398}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{b49dcdda-b5e1-014f-f890-41ce39f26e47}</Project>
+      <Name>UnityEngine.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
       <Project>{a4f146c2-e94f-90fb-374f-9eeb29ba081c}</Project>
       <Name>UnityEngine.TestRunner</Name>

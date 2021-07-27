@@ -37,23 +37,23 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\MiniJSON.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Properties\AssemblyInfo.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\WeaverRunner.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\TextUtility.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkManagerPreview.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformChildEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkAnimatorEditor.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkLobbyManagerEditor.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformPreview.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkIdentityEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkBehaviourInspector.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkScenePostProcess.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkDiscoveryEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkMigrationManagerEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkManagerHUDEditor.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkManagerEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkInformationPreview.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Properties\AssemblyInfo.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\TextUtility.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformChildEditor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformEditor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformPreview.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkScenePostProcess.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkDiscoveryEditor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkManagerEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\NetworkTransformVisualizerEditor.cs" />
      <None Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\com.unity.multiplayer-hlapi.Editor.asmdef" />
     <Reference Include="UnityEngine">
@@ -296,8 +296,14 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.NRefactory">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
+        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -653,12 +659,6 @@
     <Reference Include="System.Xml.XPath.XDocument">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="com.unity.multiplayer-hlapi.Runtime.csproj">
@@ -668,6 +668,14 @@
     <ProjectReference Include="com.unity.multiplayer-weaver.Editor.csproj">
       <Project>{17e679d3-fc31-5893-6921-82ccbe2030b6}</Project>
       <Name>com.unity.multiplayer-weaver.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{2af36194-6ef0-1442-2745-a701e52cf398}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{b49dcdda-b5e1-014f-f890-41ce39f26e47}</Project>
+      <Name>UnityEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
       <Project>{a4f146c2-e94f-90fb-374f-9eeb29ba081c}</Project>

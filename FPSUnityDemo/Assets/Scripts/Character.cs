@@ -139,6 +139,7 @@ public class Character : MonoBehaviour
     public State sliding_state;
     public State wall_climbing_state;
     public State grappling_state;
+    public State mantle_state;
     public StateMachine movement_machine;
     
     [Header("Other Variables")]
@@ -599,6 +600,14 @@ public class Character : MonoBehaviour
       return Vector3.Dot(forward_dir, grapple_dir);
     }
 
+    public void MantleMovement(Vector3 height){
+      if(transform.position.y < height.y){
+        //calculate which way to climb by using the up vector projected on the wall
+        Vector3 target_velocity = (Vector3.ProjectOnPlane(Vector3.up, wall_hit_normal) * maxClimbSpeed / 2) - wall_hit_normal;
+        velocity = Vector3.Lerp(velocity, target_velocity, runAccSpeed * Time.fixedDeltaTime);
+      }
+    }
+
     public void SetCharacterHeight(bool force, float height){
       if(force){
         controller.height = height;
@@ -706,6 +715,7 @@ public class Character : MonoBehaviour
       wall_climbing_state = new WallClimbingState(this, movement_machine);
       wall_running_state = new WallRunningState(this, movement_machine);
       grappling_state = new GrapplingState(this, movement_machine);
+      mantle_state = new MantleState(this, movement_machine);
 
       //initialize timers to set values
       slideTimer = gameObject.AddComponent<Timer>();

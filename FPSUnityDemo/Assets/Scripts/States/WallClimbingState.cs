@@ -11,6 +11,7 @@ public class WallClimbingState : State
     public override void Enter()
     {
         base.Enter();
+        character.SetDebugText( "Wall climb");
         character.SetWallClimbValues();
         character.SetAnimation(Anim.Climbing);
     }
@@ -38,7 +39,9 @@ public class WallClimbingState : State
             //character.can_wall_run = false; 
             character.WallJump();
             state_machine.ChangeState(character.falling_state);
-        }else if(!character.character_collisions.facing_wall 
+        } else if(character.character_collisions.can_mantle){
+            state_machine.ChangeState(character.mantle_state);
+        } else if(!character.character_collisions.facing_wall 
             ||character.input_handler.move_input.z < .5f
             ||!character.character_collisions.on_wall){
             character.can_wall_run = false; 

@@ -36,13 +36,13 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\UNetBehaviourProcessor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\SyncListStructProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\UNetWeaver.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\MonoBehaviourProcessor.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\UNetBehaviourProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\AssemblyInfo.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\MessageClassProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\Program.cs" />
-     <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\SyncListStructProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\Helpers.cs" />
      <None Include="Library\PackageCache\com.unity.multiplayer-hlapi@1.1.1\Editor\Tools\Weaver\com.unity.multiplayer-weaver.Editor.asmdef" />
     <Reference Include="UnityEngine">
@@ -284,6 +284,9 @@
     </Reference>
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
+        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
@@ -651,14 +654,16 @@
     <Reference Include="System.Xml.XPath.XDocument">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{2af36194-6ef0-1442-2745-a701e52cf398}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{b49dcdda-b5e1-014f-f890-41ce39f26e47}</Project>
+      <Name>UnityEngine.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
       <Project>{a4f146c2-e94f-90fb-374f-9eeb29ba081c}</Project>
       <Name>UnityEngine.TestRunner</Name>

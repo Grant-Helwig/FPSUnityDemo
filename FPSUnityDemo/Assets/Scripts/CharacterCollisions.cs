@@ -9,7 +9,9 @@ public class CharacterCollisions : MonoBehaviour
     public bool facing_wall;
     public bool on_ground; 
     public bool on_ceiling; 
+    public bool can_mantle;
     public float wall_angle;
+    public Vector3 mantle_height;
     public Vector3 ground_slope; 
     public Vector3 last_wall_position;
     public Vector3 last_wall_normal;
@@ -25,6 +27,8 @@ public class CharacterCollisions : MonoBehaviour
     private float max_wall_dist;
     [SerializeField]
     private float max_facing_wall_dist;
+    [SerializeField]
+    private Transform mantle_pos;
     private CharacterController controller;
     private float ground_check_dist = .5f;
 
@@ -53,6 +57,7 @@ public class CharacterCollisions : MonoBehaviour
         on_wall = WallCheck();
         on_ground = GroundCheck();
         on_ceiling = CeilingCheck();
+        can_mantle = MantleCheck();
         //facing_wall = FacingWallCheck();
     }
 
@@ -140,6 +145,18 @@ public class CharacterCollisions : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool MantleCheck(){
+        RaycastHit hit;
+        if(Physics.Raycast(mantle_pos.position, Vector3.down, out hit, .3f)){
+            Debug.DrawRay(mantle_pos.position, Vector3.down * .3f, Color.green);
+            mantle_height = hit.point;
+            return true;
+        } else {
+            Debug.DrawRay(mantle_pos.position, Vector3.down * .3f, Color.red);
+            return false;
+        }
     }
         
 
