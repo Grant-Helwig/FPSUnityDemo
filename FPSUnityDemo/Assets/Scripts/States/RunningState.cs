@@ -15,7 +15,8 @@ public class RunningState : State
         character.can_wall_run = true;
         character.SnapToGround();
         character.SetDebugText("Running");
-        //character.SetAnimation(Anim.Running);
+        character.SetAnimation(Anim.Running);
+        character.SetAnimationThirdPerson(Anim.Running);
     }
     public override void Exit()
     {
@@ -33,8 +34,10 @@ public class RunningState : State
     {
         if(character.velocity.magnitude < 2f && character.curAnimState != Anim.Idle){
             character.SetAnimation(Anim.Idle);
+            character.SetAnimationThirdPerson(Anim.Idle);
         } else if(character.velocity.magnitude >= 2f && character.curAnimState != Anim.Running) {
             character.SetAnimation(Anim.Running);
+            character.SetAnimationThirdPerson(Anim.Running);
         }
         base.LogicUpdate();
         if(!character.character_collisions.on_ground){
@@ -42,8 +45,6 @@ public class RunningState : State
             state_machine.ChangeState(character.falling_state);
         } else if(character.can_jump){
             if(character.character_collisions.on_wall){
-                // character.GroundWallJump();
-                // state_machine.ChangeState(character.wall_running_state);
                 character.GroundJump();
                 state_machine.ChangeState(character.falling_state);
             } else {

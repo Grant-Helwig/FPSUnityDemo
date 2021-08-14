@@ -40,6 +40,7 @@ public class Character : MonoBehaviour
     private float jumpForce = 1.0f;
     public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
     public Animator animator;
+    public Animator animatorThirdPerson;
     [Header("Sliding Variables")]
     [SerializeField]
     [Tooltip("Max speed when crouching")]
@@ -217,6 +218,7 @@ public class Character : MonoBehaviour
     private int grappleDirection;
     public Vector3 lastWallNormal = Vector3.zero;
     public Anim curAnimState;
+    public Anim curAnimStateThirdPerson;
 
     void UpdateMouseLook(){
       //get a simple vector 2 for the mouse delta 
@@ -462,6 +464,9 @@ public class Character : MonoBehaviour
       if(velocity.magnitude <= maxCrouchSpeed 
       && target_velocity.magnitude <= maxCrouchSpeed
       && !slideTimer.is_active){
+        if(curAnimStateThirdPerson != Anim.Running){
+          SetAnimationThirdPerson(Anim.Running);
+        }
         //take slope into account
         Vector3 slope_direction = Vector3.ProjectOnPlane(input_direction, character_collisions.ground_slope);
         //Get the speed you want to get to 
@@ -469,6 +474,9 @@ public class Character : MonoBehaviour
         //Smoothly transition to that velocity 
         velocity = Vector3.Lerp(velocity, crouch_velocity, crouchAccSpeed * Time.fixedDeltaTime);
       }  else {
+        if(curAnimStateThirdPerson != Anim.Sliding){
+          SetAnimationThirdPerson(Anim.Sliding);
+        }
         velocity = Vector3.Lerp(velocity, target_velocity, slideAccSpeed * Time.fixedDeltaTime);
       }
     }
@@ -688,6 +696,11 @@ public class Character : MonoBehaviour
       curAnimState = index;
     }
 
+    public void SetAnimationThirdPerson(Anim index){
+      animatorThirdPerson.SetInteger("Change", ((int)index));
+      curAnimStateThirdPerson = index;
+    }
+
     public void SetSenitivity(float val){
       mouseSensitivity = val;
     }
@@ -771,6 +784,15 @@ public class Character : MonoBehaviour
       // tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* 5);//Vector3.Scale(grappleHit.normal * -1, scale);
       //input_direction = input_handler.move_input;
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
+      animatorThirdPerson.SetFloat("x", input_handler.move_input.x, .5f, Time.fixedDeltaTime);
+      animatorThirdPerson.SetFloat("y", input_handler.move_input.z, .5f, Time.fixedDeltaTime);
+      //animatorThirdPerson.SetFloat("Velocity", controller.velocity.magnitude / 5);
+      if(controller.velocity.magnitude > 10){
+        animatorThirdPerson.speed = controller.velocity.magnitude / 5;
+      } else {
+        animatorThirdPerson.speed = 1;
+      }
+      
       movement_machine.cur_state.PhysicsUpdate();
       controller.Move(velocity * Time.fixedDeltaTime);
       if(debug_speed != null){

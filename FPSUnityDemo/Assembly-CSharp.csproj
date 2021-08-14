@@ -77,6 +77,7 @@
      <Compile Include="Assets\Scripts\CharacterCollisions.cs" />
      <Compile Include="Assets\Scripts\InputHandler.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineSmoother.cs" />
+     <Compile Include="Assets\Scripts\ThirdPersonIKSolver.cs" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Glass_Global.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Object.shader" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Global.shader" />
