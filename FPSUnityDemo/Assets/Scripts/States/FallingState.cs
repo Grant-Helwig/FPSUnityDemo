@@ -15,6 +15,7 @@ public class FallingState : State
         float horizontal_velocity = new Vector3(character.velocity.x, 0 , character.velocity.z).magnitude;
         character.SetAirValues(horizontal_velocity);
         character.SetAnimation(Anim.Falling);
+        character.SetAnimationThirdPerson(Anim.Falling);
     }
     public override void Exit()
     {

@@ -41,6 +41,7 @@ public class Character : MonoBehaviour
     public float JumpForce { get { return jumpForce; } set { jumpForce = value; } }
     public Animator animator;
     public Animator animatorThirdPerson;
+    public BipedIK thirdPersonIK;
     [Header("Sliding Variables")]
     [SerializeField]
     [Tooltip("Max speed when crouching")]
@@ -370,8 +371,10 @@ public class Character : MonoBehaviour
     public void EnableWallRunArm(){
       if(wall_direction < 0){
         rightArm.enabled = true;
+        SetAnimationThirdPerson(Anim.WallRunningRight);
       } else {
         leftArm.enabled = true;
+        SetAnimationThirdPerson(Anim.WallRunningLeft);
       }
     }
 
@@ -802,4 +805,4 @@ public class Character : MonoBehaviour
     }
 }
 
-public enum Anim : int{Idle, Running, Sliding, Falling, Climbing}
+public enum Anim : int{Idle, Running, Sliding, Falling, Climbing, WallRunningLeft, WallRunningRight}

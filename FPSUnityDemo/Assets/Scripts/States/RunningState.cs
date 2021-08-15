@@ -17,10 +17,12 @@ public class RunningState : State
         character.SetDebugText("Running");
         character.SetAnimation(Anim.Running);
         character.SetAnimationThirdPerson(Anim.Running);
+        character.thirdPersonIK.enabled = true;
     }
     public override void Exit()
     {
         base.Exit();
+        character.thirdPersonIK.enabled = false;
     }
 
     public override void HandleInput()
