@@ -45,7 +45,7 @@ public class SlidingState : State
     {
         base.PhysicsUpdate();
         if(!character.AtHeight(character.crouching_height)){
-            //character.SetCharacterHeight(false, character.crouching_height);
+            character.SetCharacterHeight(false, character.crouching_height);
         }
         if(character.current_camera_roll != 0){
             character.SetCameraAngle(0);

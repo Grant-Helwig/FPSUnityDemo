@@ -42,6 +42,7 @@ public class Character : MonoBehaviour
     public Animator animator;
     public Animator animatorThirdPerson;
     public BipedIK thirdPersonIK;
+    public Transform thirdPerson;
     [Header("Sliding Variables")]
     [SerializeField]
     [Tooltip("Max speed when crouching")]
@@ -143,7 +144,59 @@ public class Character : MonoBehaviour
     public State grappling_state;
     public State mantle_state;
     public StateMachine movement_machine;
-    
+    [Header("Weapon Variables")]
+    [SerializeField]
+    [Tooltip("Sway Amount")]
+    [Range(0,20)]
+    private float swayAmount = 1.0f;
+    public float SwayAmount { get { return swayAmount; } set { swayAmount = value; } }
+    [SerializeField]
+    [Tooltip("Sway Smoothing")]
+    [Range(0,1)]
+    private float swaySmoothing = 1.0f;
+    public float SwaySmoothing { get { return swaySmoothing; } set { swaySmoothing = value; } }
+    [SerializeField]
+    [Tooltip("Sway  Reset Smoothing")]
+    [Range(0,1)]
+    private float swayResetSmoothing = 1.0f;
+    public float SwayResetSmoothing { get { return swayResetSmoothing; } set { swayResetSmoothing = value; } }
+    [SerializeField]
+    [Tooltip("Sway Clamp X")]
+    [Range(0,10)]
+    private float swayClampX = 1.0f;
+    public float SwayClampX { get { return swayClampX; } set { swayClampX = value; } }
+    [SerializeField]
+    [Tooltip("Sway Clamp Y")]
+    [Range(0,10)]
+    private float swayClampY = 1.0f;
+    public float SwayClampY { get { return swayClampY; } set { swayClampY = value; } }
+    [SerializeField]
+    [Tooltip("movement Sway Amount")]
+    [Range(0,20)]
+    private float swayMovementX = 1.0f;
+    public float SwayMovementX { get { return swayMovementX; } set { swayMovementX = value; } }
+    [SerializeField]
+    [Tooltip("movement Sway Amount")]
+    [Range(0,20)]
+    private float swayMovementY = 1.0f;
+    public float SwayMovementY { get { return swayMovementY; } set { swayMovementY = value; } }
+    [SerializeField]
+    [Tooltip("movement Sway Smoothing Amount")]
+    [Range(0,20)]
+    private float swayMovementSmoothing = 1.0f;
+    public float SwayMovementSmoothing { get { return swayMovementSmoothing; } set { swayMovementSmoothing = value; } }
+
+    Vector3 newWeaponRotation;
+    Vector3 newWeaponVelocity;
+    Vector3 targetWeaponRotation;
+    Vector3 targetWeaponVelocity;
+    Vector3 newWeaponMovementRotation;
+    Vector3 newWeaponMovementVelocity;
+    Vector3 targetWeaponMovementRotation;
+    Vector3 targetWeaponMovementVelocity;
+
+    Vector3 initialWeaponRotation;
+    public Transform weaponHand;
     [Header("Other Variables")]
     public CharacterCollisions character_collisions;
     public InputHandler input_handler;
@@ -370,7 +423,7 @@ public class Character : MonoBehaviour
 
     public void EnableWallRunArm(){
       if(wall_direction < 0){
-        rightArm.enabled = true;
+        //rightArm.enabled = true;
         SetAnimationThirdPerson(Anim.WallRunningRight);
       } else {
         leftArm.enabled = true;
@@ -380,7 +433,7 @@ public class Character : MonoBehaviour
 
     public void DisableWallRunArms(){
       leftArm.enabled = false;
-      rightArm.enabled = false;
+      //rightArm.enabled = false;
     }
 
     public void EndWallRun(){
@@ -424,7 +477,8 @@ public class Character : MonoBehaviour
         slide_speed = last_slide_speed;
 
         //if you are sliding onto flat ground, start the timer
-        if(!slideTimerSet){
+        if(!slideTimerSet && velocity.magnitude > maxCrouchSpeed 
+          && slide_speed > maxCrouchSpeed){
           slideTimer.StartTimer();
           slideTimerSet = true; 
         }
@@ -464,11 +518,17 @@ public class Character : MonoBehaviour
 
       
       // perform a crouch if your current velocity is less than half your run speed along with your target velocity 
+      print(target_velocity.magnitude + " | " + !slideTimer.is_active);
       if(velocity.magnitude <= maxCrouchSpeed 
       && target_velocity.magnitude <= maxCrouchSpeed
       && !slideTimer.is_active){
-        if(curAnimStateThirdPerson != Anim.Running){
-          SetAnimationThirdPerson(Anim.Running);
+        // if(curAnimStateThirdPerson != Anim.Running){
+        //   SetAnimationThirdPerson(Anim.Running);
+        // }
+        if(velocity.magnitude < 2f && curAnimState != Anim.Idle){
+            SetAnimationThirdPerson(Anim.Idle);
+        } else if(velocity.magnitude >= 2f && curAnimState != Anim.Running) {
+            SetAnimationThirdPerson(Anim.Running);
         }
         //take slope into account
         Vector3 slope_direction = Vector3.ProjectOnPlane(input_direction, character_collisions.ground_slope);
@@ -624,12 +684,16 @@ public class Character : MonoBehaviour
         controller.height = height;
         controller.center = Vector3.up * height * .5f;
         FPCamera.transform.localPosition = Vector3.up * height * cameraHeightRatio;
+        thirdPerson.localPosition = Vector3.up * .3f * cameraHeightRatio;
       } else {
         controller.height = Mathf.Lerp(controller.height, height, crouchSharpness * Time.fixedDeltaTime);
         controller.center = Vector3.up * height * .5f;
         FPCamera.transform.localPosition = Vector3.Lerp(FPCamera.transform.localPosition, Vector3.up * height * cameraHeightRatio, crouchSharpness * Time.fixedDeltaTime);
+        thirdPerson.localPosition = Vector3.Lerp(thirdPerson.localPosition, Vector3.down *(.6f - (.3f * height)), crouchSharpness * Time.fixedDeltaTime);
       }
     }
+
+    public void SetThirdPersonHeight(bool force, float height){}
 
     public float SetCameraAngle(float target_angle){
       float camera_angle = FPCamera.eulerAngles.z;
@@ -707,6 +771,26 @@ public class Character : MonoBehaviour
     public void SetSenitivity(float val){
       mouseSensitivity = val;
     }
+
+    public void WeaponSway(){
+      targetWeaponRotation.y += swayAmount * input_handler.mouse_delta.x * Time.fixedDeltaTime;
+      targetWeaponRotation.x += swayAmount * input_handler.mouse_delta.y * Time.fixedDeltaTime;
+
+      targetWeaponRotation.x = Mathf.Clamp(targetWeaponRotation.x, initialWeaponRotation.x - SwayClampX, initialWeaponRotation.x + swayClampX);
+      targetWeaponRotation.y = Mathf.Clamp(targetWeaponRotation.y, initialWeaponRotation.y - SwayClampY, initialWeaponRotation.y + swayClampY);
+      targetWeaponRotation.z = initialWeaponRotation.z +  ((targetWeaponRotation.y -  initialWeaponRotation.y)* 5);
+
+      targetWeaponRotation = Vector3.SmoothDamp(targetWeaponRotation, initialWeaponRotation, ref targetWeaponVelocity, swayResetSmoothing);
+      newWeaponRotation = Vector3.SmoothDamp(newWeaponRotation, targetWeaponRotation, ref newWeaponVelocity, swaySmoothing);
+      
+      targetWeaponMovementRotation.z = input_handler.move_input.x * swayMovementX;
+      targetWeaponMovementRotation.x = input_handler.move_input.z * swayMovementY;
+
+      targetWeaponMovementRotation = Vector3.SmoothDamp(targetWeaponMovementRotation, Vector3.zero, ref targetWeaponMovementVelocity, swayMovementSmoothing);
+      newWeaponMovementRotation = Vector3.SmoothDamp(newWeaponMovementRotation, targetWeaponMovementRotation, ref newWeaponMovementVelocity, swayMovementSmoothing);
+      
+      weaponHand.localRotation = Quaternion.Euler(newWeaponRotation + newWeaponMovementRotation);
+    }
     
     private void Awake() {
       Application.targetFrameRate = 120;
@@ -722,6 +806,9 @@ public class Character : MonoBehaviour
       SetAnimation(((int)Anim.Idle));
       standing_height = controller.height;
       crouching_height = standing_height / 2;
+
+      initialWeaponRotation = weaponHand.localRotation.eulerAngles;
+      targetWeaponRotation = initialWeaponRotation;
 
       // initialize all state machine variables
       movement_machine = new StateMachine();
@@ -789,12 +876,9 @@ public class Character : MonoBehaviour
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
       animatorThirdPerson.SetFloat("x", input_handler.move_input.x, .5f, Time.fixedDeltaTime);
       animatorThirdPerson.SetFloat("y", input_handler.move_input.z, .5f, Time.fixedDeltaTime);
+      WeaponSway();
       //animatorThirdPerson.SetFloat("Velocity", controller.velocity.magnitude / 5);
-      if(controller.velocity.magnitude > 10){
-        animatorThirdPerson.speed = controller.velocity.magnitude / 5;
-      } else {
-        animatorThirdPerson.speed = 1;
-      }
+      
       
       movement_machine.cur_state.PhysicsUpdate();
       controller.Move(velocity * Time.fixedDeltaTime);

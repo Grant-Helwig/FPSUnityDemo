@@ -47,9 +47,9 @@ public class ThirdPersonIKSolver : MonoBehaviour
             footVector = Vector3.Cross(character.input_direction, Vector3.up).normalized;
             offset = Vector3.MoveTowards(offset, offset + (character.transform.right * footSpacing), stepDistance / 2);
             ray = new Ray(offset, Vector3.down);
-            footVector = Vector3.Cross(character.input_direction, Vector3.up).normalized;
-            offset = Vector3.MoveTowards(offset, offset + (-footVector * footSpacing) + (character.input_direction * stepDistance / 2), stepDistance / 2);
-            ray = new Ray(offset, Vector3.down);
+            // footVector = Vector3.Cross(character.input_direction, Vector3.up).normalized;
+            // offset = Vector3.MoveTowards(offset, offset + (-footVector * footSpacing) + (character.input_direction * stepDistance / 2), stepDistance / 2);
+            // ray = new Ray(offset, Vector3.down);
         }
         //Vector3 footVector = Vector3.Cross(character.input_direction, Vector3.up).normalized;
         //offset = Vector3.MoveTowards(offset, offset + (-footVector * footSpacing) + (character.input_direction * stepDistance / 2), stepDistance / 2);

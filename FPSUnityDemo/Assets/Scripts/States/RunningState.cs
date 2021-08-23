@@ -17,12 +17,15 @@ public class RunningState : State
         character.SetDebugText("Running");
         character.SetAnimation(Anim.Running);
         character.SetAnimationThirdPerson(Anim.Running);
-        character.thirdPersonIK.enabled = true;
+        //character.thirdPersonIK.solvers.leftFoot.IKPositionWeight = 1;
+        //character.thirdPersonIK.solvers.rightFoot.IKPositionWeight = 1;
     }
     public override void Exit()
     {
         base.Exit();
-        character.thirdPersonIK.enabled = false;
+        //character.thirdPersonIK.solvers.leftFoot.IKPositionWeight = 0;
+        //character.thirdPersonIK.solvers.rightFoot.IKPositionWeight = 0;
+        character.animatorThirdPerson.speed = 1;
     }
 
     public override void HandleInput()
@@ -41,6 +44,13 @@ public class RunningState : State
             character.SetAnimation(Anim.Running);
             character.SetAnimationThirdPerson(Anim.Running);
         }
+        
+        if(character.controller.velocity.magnitude > 10){
+            character.animatorThirdPerson.speed = character.controller.velocity.magnitude / 5;
+        } else {
+            character.animatorThirdPerson.speed = 1;
+        }
+
         base.LogicUpdate();
         if(!character.character_collisions.on_ground){
             character.coyoteTimer.StartTimer();
