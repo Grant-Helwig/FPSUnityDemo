@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using RootMotion.FinalIK;
 public class SlidingState : State
 {
     float target_velocity_speed;
@@ -18,11 +18,18 @@ public class SlidingState : State
         character.SnapToGround();
         character.SetDebugText("Sliding");
         character.SetAnimation(Anim.Sliding);
+        character.hipIK.GetComponent<OffsetModifier>().enabled = true;
+        //character.grounderBipedIK.enabled = false;
+        //character.grounderBipedIK.solver.liftPelvisWeight = -1.5f;
+        //character.grounderBipedIK.enabled = true;
+        //character.hipIK.GetComponent<eff>
     }
     public override void Exit()
     {
         base.Exit();
         character.ResetSlideTimer();
+        character.hipIK.GetComponent<OffsetModifier>().enabled = false;
+        //character.grounderBipedIK.solver.liftPelvisWeight = .5f;
     }
 
     public override void HandleInput()

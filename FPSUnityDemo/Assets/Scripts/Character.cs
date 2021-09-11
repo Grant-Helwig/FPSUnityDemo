@@ -42,6 +42,10 @@ public class Character : MonoBehaviour
     public Animator animator;
     public Animator animatorThirdPerson;
     public BipedIK thirdPersonIK;
+    public GrounderBipedIK grounderBipedIK;
+    public GameObject hipIK;
+    public Transform standingHips;
+    public Transform crouchingHips;
     public Transform thirdPerson;
     [Header("Sliding Variables")]
     [SerializeField]
@@ -684,12 +688,21 @@ public class Character : MonoBehaviour
         controller.height = height;
         controller.center = Vector3.up * height * .5f;
         FPCamera.transform.localPosition = Vector3.up * height * cameraHeightRatio;
-        thirdPerson.localPosition = Vector3.up * .3f * cameraHeightRatio;
+        //thirdPerson.localPosition = Vector3.up * .3f * cameraHeightRatio;
       } else {
         controller.height = Mathf.Lerp(controller.height, height, crouchSharpness * Time.fixedDeltaTime);
         controller.center = Vector3.up * height * .5f;
         FPCamera.transform.localPosition = Vector3.Lerp(FPCamera.transform.localPosition, Vector3.up * height * cameraHeightRatio, crouchSharpness * Time.fixedDeltaTime);
         thirdPerson.localPosition = Vector3.Lerp(thirdPerson.localPosition, Vector3.down *(.6f - (.3f * height)), crouchSharpness * Time.fixedDeltaTime);
+        if(height > 1.5){
+          //grounderBipedIK.solver.liftPelvisWeight = Mathf.Lerp(grounderBipedIK.solver.liftPelvisWeight, .5f, crouchSharpness * Time.fixedDeltaTime);
+          hipIK.transform.localPosition = Vector3.Lerp(hipIK.transform.localPosition, standingHips.transform.localPosition, crouchSharpness * Time.fixedDeltaTime);
+        } else {
+         // grounderBipedIK.solver.liftPelvisWeight = Mathf.Lerp(grounderBipedIK.solver.liftPelvisWeight, -1.5f, crouchSharpness * Time.fixedDeltaTime);
+          hipIK.transform.localPosition = Vector3.Lerp(hipIK.transform.localPosition, crouchingHips.transform.localPosition, crouchSharpness * Time.fixedDeltaTime);
+        }
+        //grounderBipedIK.solver.Update();
+        //grounderBipedIK.solver.liftPelvisWeight = Mathf.Lerp(grounderBipedIK.solver.liftPelvisWeight, height - 1.5f, crouchSharpness * Time.fixedDeltaTime);
       }
     }
 
