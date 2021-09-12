@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 
 public class Settings : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Settings : MonoBehaviour
     public Dropdown textureDropdown;
     public Dropdown aaDropdown;
     public Slider volumeSlider;
+    public UniversalRenderPipelineAsset renderPipelineAsset;
     float currentVolume;
     Resolution[] resolutions;
 
@@ -29,7 +31,7 @@ public class Settings : MonoBehaviour
                 && resolutions[i].height == Screen.currentResolution.height)
                 currentResolutionIndex = i;
         }
-        
+
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.RefreshShownValue();
         LoadSettings(currentResolutionIndex);
