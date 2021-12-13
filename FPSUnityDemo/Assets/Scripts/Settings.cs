@@ -58,6 +58,7 @@ public class Settings : MonoBehaviour
 
     public void SetAntiAliasing(int aaIndex) {
         QualitySettings.antiAliasing = aaIndex;
+        renderPipelineAsset.msaaSampleCount = aaIndex;
         qualityDropdown.value = 6;
     }
 

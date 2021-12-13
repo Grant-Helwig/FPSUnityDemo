@@ -41,6 +41,10 @@ namespace RootMotion.FinalIK {
 		/// </summary>
 		public float applyAngularVelocity = 1f;
 
+		public Rigidbody leftLeg;
+		public Rigidbody rightLeg;
+		public Rigidbody leftArm;
+		public Rigidbody rightArm;
 		/// <summary>
 		/// Switches to ragdoll.
 		/// </summary>
@@ -76,7 +80,6 @@ namespace RootMotion.FinalIK {
 			public float deltaTime;
 			public Vector3 lastPosition;
 			public Quaternion lastRotation;
-
 			// Constructor
 			public Rigidbone (Rigidbody r) {
 				this.r = r;
@@ -171,6 +174,7 @@ namespace RootMotion.FinalIK {
 
 		private Animator animator;
 		private Rigidbone[] rigidbones = new Rigidbone[0];
+
 		private Child[] children = new Child[0];
 		private bool enableRagdollFlag;
 		private AnimatorUpdateMode animatorUpdateMode;
@@ -180,6 +184,10 @@ namespace RootMotion.FinalIK {
 		private float ragdollWeightV;
 		private bool fixedFrame;
 		private bool[] disabledIKComponents = new bool[0];
+		private Rigidbone[] leftLegBone;
+		private Rigidbone[] rightLegBone;
+		private Rigidbone[] leftArmBone;
+		private Rigidbone[] rightArmBone;
 
 		// Find all necessary components and initiate
 		public void Start() {
@@ -195,12 +203,36 @@ namespace RootMotion.FinalIK {
 			Rigidbody[] rigidbodies = (Rigidbody[])GetComponentsInChildren<Rigidbody>();
 			int firstIndex = rigidbodies[0].gameObject == gameObject? 1: 0;
 
-			rigidbones = new Rigidbone[firstIndex == 0? rigidbodies.Length: rigidbodies.Length - 1];
+			if(leftLeg && rightLeg && rightArm && leftArm != null){
+				leftLegBone = new Rigidbone[3];
+				rightLegBone = new Rigidbone[3];
+				leftArmBone = new Rigidbone[3];
+				rightArmBone = new Rigidbone[3];
+				Rigidbody[] leftLegBones = leftLeg.GetComponentsInChildren<Rigidbody>();
+				Rigidbody[] rightLegBones = rightLeg.GetComponentsInChildren<Rigidbody>();
+				Rigidbody[] leftArmBones = leftArm.GetComponentsInChildren<Rigidbody>();
+				Rigidbody[] rightArmBones = rightArm.GetComponentsInChildren<Rigidbody>();
+				for(int i = 0; i < leftLegBone.Length; i++){
+					leftLegBone[i] = new Rigidbone(leftLegBones[i]);
+					rightLegBone[i] = new Rigidbone(rightLegBones[i]);
+					leftArmBone[i] = new Rigidbone(leftArmBones[i]);
+					rightArmBone[i] = new Rigidbone(rightArmBones[i]);
+				}
+			}
 
+			rigidbones = new Rigidbone[firstIndex == 0? rigidbodies.Length: rigidbodies.Length - 1];
+			print(rigidbodies[firstIndex].name);
 			for (int i = 0; i < rigidbones.Length; i++) {
 				rigidbones[i] = new Rigidbone(rigidbodies[i + firstIndex]);
 			}
+			// rigidbones = new Rigidbone[leftLegBone.Length + rightLegBone.Length
+			// 	+ leftArmBone.Length + rightArmBone.Length];
+			// leftLegBone.CopyTo(rigidbones, 0);
+			// rightLegBone.CopyTo(rigidbones, leftLegBone.Length);
+			// leftArmBone.CopyTo(rigidbones, leftLegBone.Length + rightLegBone.Length);
+			// rightArmBone.CopyTo(rigidbones, leftLegBone.Length + rightLegBone.Length + leftArmBone.Length);
 
+			
 			// Find all the child Transforms
 			Transform[] C = (Transform[])GetComponentsInChildren<Transform>();
 			children = new Child[C.Length - 1];
@@ -323,6 +355,7 @@ namespace RootMotion.FinalIK {
 		private void OnFinalPose() {
 			if (!isRagdoll) RecordVelocities();
 			if (enableRagdollFlag) RagdollEnabler();
+			//if (enableRagdollFlag) RagdollEnableLimbs();
 		}
 
 		// Switching to ragdoll
@@ -360,6 +393,56 @@ namespace RootMotion.FinalIK {
 			ragdollWeightV = 0f;
 
 			enableRagdollFlag = false;
+		}
+
+		public void RagdollEnableLimbs(){
+			// Remember the last animated pose
+			StoreLocalState();
+
+			// Disable IK components if necessary
+			for (int i = 0; i < allIKComponents.Length; i++) disabledIKComponents[i] = false;
+
+			if (!applyIkOnRagdoll) {
+				for (int i = 0; i < allIKComponents.Length; i++) {
+					if (allIKComponents[i].enabled) {
+						allIKComponents[i].enabled = false;
+						disabledIKComponents[i] = true;
+					}
+				}
+			}
+			// Switch Animator update mode to AnimatePhysics, so IK is updated in the fixed time step
+			animatorUpdateMode = animator.updateMode;
+			animator.updateMode = AnimatorUpdateMode.AnimatePhysics;
+
+			// Disable the Animator so it won't overwrite physics
+			animator.enabled = false;
+			
+			for(int i = 0; i < leftLegBone.Length; i++){
+				
+				leftLegBone[i].RecordVelocity();
+				rightLegBone[i].RecordVelocity();
+				leftArmBone[i].RecordVelocity();
+				rightArmBone[i].RecordVelocity();
+			}
+			for(int i = 0; i < leftLegBone.Length; i++){
+				leftLegBone[i].WakeUp(applyVelocity, applyAngularVelocity);
+				rightLegBone[i].WakeUp(applyVelocity, applyAngularVelocity);
+				leftArmBone[i].WakeUp(applyVelocity, applyAngularVelocity);
+				rightArmBone[i].WakeUp(applyVelocity, applyAngularVelocity);
+			}
+			ragdollWeight = 1f;
+			ragdollWeightV = 0f;
+
+			enableRagdollFlag = false;
+		}
+		public void RagdollDisableLimbs(){
+			animator.enabled = true;
+			for(int i = 0; i < leftLegBone.Length; i++){
+				leftLegBone[i].r.isKinematic = true;
+				rightLegBone[i].r.isKinematic = true;
+				leftArmBone[i].r.isKinematic = true;
+				rightArmBone[i].r.isKinematic = true;
+			}
 		}
 
 		// Is the character currently in ragdoll mode?

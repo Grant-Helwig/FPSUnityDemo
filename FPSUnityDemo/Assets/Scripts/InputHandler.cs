@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     public bool is_sliding;
     public bool is_sprinting;
     public bool is_grappling;
+    public bool is_ragdoll;
     public Vector3 move_input;
     public Vector2 mouse_delta;
 
@@ -33,6 +34,10 @@ public class InputHandler : MonoBehaviour
 
     void OnJump(InputValue value){
         is_jumping = value.isPressed;
+    }
+
+    void OnRagdoll(InputValue value){
+        is_ragdoll = value.isPressed;
     }
 
     void OnSlide(InputValue value){

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using RootMotion.FinalIK;
-
+using UnityEngine.InputSystem;
 namespace RootMotion.Demos {
 
 	// Demonstrating the use of RagdollUtility.cs.
@@ -10,6 +10,7 @@ namespace RootMotion.Demos {
 		public RagdollUtility ragdollUtility;
 		public Transform root;
 		public Rigidbody pelvis;
+		 public bool is_jumping = false;
 
 		void OnGUI() {
 			GUILayout.Label(" Press R to switch to ragdoll. " +
@@ -18,16 +19,19 @@ namespace RootMotion.Demos {
 		}
 
 		void Update() {
-			if (Input.GetKeyDown(KeyCode.R)) ragdollUtility.EnableRagdoll();
-			if (Input.GetKeyDown(KeyCode.A)) {
-				// Move the root of the character to where the pelvis is without moving the ragdoll
-				Vector3 toPelvis = pelvis.position - root.position;
-				root.position += toPelvis;
-				pelvis.transform.position -= toPelvis;
+			if (is_jumping) ragdollUtility.EnableRagdoll();
+			// if (Input.GetKeyDown(KeyCode.A)) {
+			// 	// Move the root of the character to where the pelvis is without moving the ragdoll
+			// 	Vector3 toPelvis = pelvis.position - root.position;
+			// 	root.position += toPelvis;
+			// 	pelvis.transform.position -= toPelvis;
 
-				ragdollUtility.DisableRagdoll();
-			}
+			// 	ragdollUtility.DisableRagdoll();
+			// }
 		}
 
+		void OnJump(InputValue value){
+        	is_jumping = value.isPressed;
+    	}
 	}
 }

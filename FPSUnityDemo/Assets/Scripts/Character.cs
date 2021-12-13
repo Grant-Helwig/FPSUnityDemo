@@ -147,6 +147,7 @@ public class Character : MonoBehaviour
     public State wall_climbing_state;
     public State grappling_state;
     public State mantle_state;
+    public State ragdoll_state;
     public StateMachine movement_machine;
     [Header("Weapon Variables")]
     [SerializeField]
@@ -208,6 +209,7 @@ public class Character : MonoBehaviour
     private LimbIK leftArm = null;
     [SerializeField]
     private LimbIK rightArm = null;
+    public RagdollUtility ragdoll = null;
 
     [SerializeField]
     private Transform FPCamera = null;
@@ -627,7 +629,9 @@ public class Character : MonoBehaviour
       float linear_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * grapple_angle);
       float sideways_speed = minGrappleSpeed + ((maxGrappleSpeed - minGrappleSpeed) * (1 - grapple_angle));
       
+      //default target linear velocity 
       Vector3 target_linear_velocity = grapple_dir * 3;
+      
       //if the player is aiming within 90 degrees of grapple point
       if( grapple_angle > .7f){
         //target_sideways_velocity = forward_dir * ((1+ Mathf.Abs(1 - grapple_angle)) * maxAngularGrappleSpeed);
@@ -832,6 +836,7 @@ public class Character : MonoBehaviour
       wall_running_state = new WallRunningState(this, movement_machine);
       grappling_state = new GrapplingState(this, movement_machine);
       mantle_state = new MantleState(this, movement_machine);
+      ragdoll_state = new RagdollState(this, movement_machine);
 
       //initialize timers to set values
       slideTimer = gameObject.AddComponent<Timer>();
@@ -863,15 +868,23 @@ public class Character : MonoBehaviour
 
     void Update()
     {
+      //always update aiming
       UpdateMouseLook();
       if(!jumpCooldownTimer.is_active && !wallJumpCooldownTimer.is_active){
         can_jump = JumpBuffer();
       }
+
+      //temporary handlers for grapple and ragdoll state, need to be stripped out later 
       if(input_handler.is_grappling){
         if(movement_machine.cur_state != grappling_state){
           movement_machine.ChangeState(grappling_state);
         }
+      } 
+      
+      if(input_handler.is_ragdoll){
+        movement_machine.ChangeState(ragdoll_state);
       }
+
       movement_machine.cur_state.HandleInput();
       movement_machine.cur_state.LogicUpdate();
     }
@@ -886,14 +899,20 @@ public class Character : MonoBehaviour
       // Vector3 scale = new Vector3(.2f, .2f, .2f);
       // tongueSpline.nodes[1].Direction = tongue_end +  (Vector3.Cross(testPosition.TransformDirection(Vector3.forward), Vector3.up)* 5);//Vector3.Scale(grappleHit.normal * -1, scale);
       //input_direction = input_handler.move_input;
+
+      //translate inputs to the correct values for calculations later
       input_direction = transform.right * input_handler.move_input.x + transform.forward * input_handler.move_input.z;
+
+      //set animations all the time for now
       animatorThirdPerson.SetFloat("x", input_handler.move_input.x, .5f, Time.fixedDeltaTime);
       animatorThirdPerson.SetFloat("y", input_handler.move_input.z, .5f, Time.fixedDeltaTime);
       WeaponSway();
       //animatorThirdPerson.SetFloat("Velocity", controller.velocity.magnitude / 5);
       
-      
+      //calls current machine states
       movement_machine.cur_state.PhysicsUpdate();
+
+      //uses the movement calculated by the current state 
       controller.Move(velocity * Time.fixedDeltaTime);
       if(debug_speed != null){
         debug_speed.text =  ((int)(((new Vector3(velocity.x, 0 , velocity.z).magnitude / 1000) * 60) * 60)).ToString();
