@@ -149,6 +149,14 @@ public class Character : MonoBehaviour
     public State mantle_state;
     public State ragdoll_state;
     public StateMachine movement_machine;
+
+    public State climb_state;
+    public State grapple_state;
+    public State idle_state;
+    public State reload_state;
+    public State shoot_state;
+    public StateMachine action_machine;
+
     [Header("Weapon Variables")]
     [SerializeField]
     [Tooltip("Sway Amount")]
@@ -838,6 +846,13 @@ public class Character : MonoBehaviour
       mantle_state = new MantleState(this, movement_machine);
       ragdoll_state = new RagdollState(this, movement_machine);
 
+      action_machine = new StateMachine();
+      //climb_state = new ClimbState(this, action_machine);
+      grapple_state = new GrappleState(this, action_machine);
+      idle_state = new IdleState(this, action_machine);
+      reload_state = new ReloadState(this, action_machine);
+      shoot_state = new ShootState(this, action_machine);
+
       //initialize timers to set values
       slideTimer = gameObject.AddComponent<Timer>();
       slideTimer.SetTimer(slideTime);
@@ -856,8 +871,10 @@ public class Character : MonoBehaviour
       GrappleCooldownTimer = gameObject.AddComponent<Timer>();
       GrappleCooldownTimer.SetTimer(grappleCooldown);
       
-      //default to the failling state 
+      //default to the falling state 
       movement_machine.Initialize(falling_state);
+
+      action_machine.Initialize(idle_state);
 
       //lock cursor to screen and hide cursor
       if(lock_cursor){
