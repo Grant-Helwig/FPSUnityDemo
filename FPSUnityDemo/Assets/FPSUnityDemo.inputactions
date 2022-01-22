@@ -76,6 +76,22 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "ShootDown",
+                    "type": "Button",
+                    "id": "cd1541a5-6bea-4d60-84fe-453aba1df269",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "ShootUp",
+                    "type": "Button",
+                    "id": "00438ae8-6a06-4471-a98c-d9dc30c0792d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -324,7 +340,7 @@
                 {
                     "name": "",
                     "id": "b88d91f2-a135-4dcc-9168-93b42875d863",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -335,7 +351,7 @@
                 {
                     "name": "",
                     "id": "f9f13a6f-2f9e-4342-b00d-22522fd44642",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -346,7 +362,7 @@
                 {
                     "name": "",
                     "id": "71977121-80c9-48cf-8717-fe3bdbf2161b",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -357,7 +373,7 @@
                 {
                     "name": "",
                     "id": "a05c5f4e-ab64-4bb8-a200-84e5e32936a1",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -384,6 +400,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Ragdoll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "148a406e-a24d-4162-8d19-1e24c3145c07",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d1fdc27-c24e-411f-adab-658b0ddc628e",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

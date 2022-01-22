@@ -36,11 +36,14 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Image.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Toggle.cs" />
+     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Layout\LayoutElement.cs" />
+     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Mask.cs" />
+     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\ScrollRect.cs" />
+     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\EventSystem\InputModules\StandaloneInputModule.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Text.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\GraphicRaycaster.cs" />
-     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Image.cs" />
-     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Layout\LayoutElement.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Selectable.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\VertexModifiers\Shadow.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Utility\VertexHelper.cs" />
@@ -72,7 +75,6 @@
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\MaskUtilities.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\GraphicRegistry.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\CanvasUpdateRegistry.cs" />
-     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Mask.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\EventSystem\Raycasters\PhysicsRaycaster.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\RectMask2D.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\DefaultControls.cs" />
@@ -97,7 +99,6 @@
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Layout\CanvasScaler.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Layout\AspectRatioFitter.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Misc.cs" />
-     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\EventSystem\InputModules\StandaloneInputModule.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Scrollbar.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\FontUpdateTracker.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\ColorBlock.cs" />
@@ -112,7 +113,6 @@
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Dropdown.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\GraphicRebuildTracker.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Culling\Clipping.cs" />
-     <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\ScrollRect.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\Utility\ObjectPool.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\EventSystem\Raycasters\BaseRaycaster.cs" />
      <Compile Include="C:\Program Files\Unity\Hub\Editor\2020.3.9f1\Editor\Data\Resources\PackageManager\BuiltInPackages\com.unity.ugui\Runtime\UI\Core\MaskableGraphic.cs" />
@@ -362,14 +362,29 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.collections@1.0.0-pre.5/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

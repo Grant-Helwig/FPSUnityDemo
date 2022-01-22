@@ -149,8 +149,8 @@
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\Overrides\TonemappingEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\ShaderGUI\Shaders\LitShader.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\ShaderGraph\UniversalFields.cs" />
-     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\ShaderGraph\Targets\UniversalTarget.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\Overrides\LiftGammaGainEditor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\ShaderGraph\Targets\UniversalTarget.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\2D\ShapeEditor\Selection\PointRectSelector.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\AssetPostProcessors\ThreeDSMaterialDescriptionPostprocessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.render-pipelines.universal@10.5.1\Editor\ShaderGraph\Targets\UniversalSpriteLitSubTarget.cs" />
@@ -427,14 +427,29 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.collections@1.0.0-pre.5/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -807,6 +822,10 @@
     <ProjectReference Include="Unity.ShaderGraph.Editor.csproj">
       <Project>{be78baec-b1ee-8189-44fd-48a99fdb041e}</Project>
       <Name>Unity.ShaderGraph.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Burst.Editor.csproj">
+      <Project>{320c406b-6eeb-441e-c5ca-e064ab7ccfa6}</Project>
+      <Name>Unity.Burst.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Mathematics.Editor.csproj">
       <Project>{783ecabf-758b-0089-b2dd-a800057b78b7}</Project>

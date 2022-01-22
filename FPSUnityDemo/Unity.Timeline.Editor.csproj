@@ -153,9 +153,9 @@
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Window\TimelineWindow_TimeArea.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Utilities\AnimatedParameterCache.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\State\WindowState.cs" />
-     <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\inspectors\DirectorNamedColorInspector.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Utilities\Scopes\GUIColorOverride.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\treeview\ItemGui\TimelineClipGUI.cs" />
+     <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\inspectors\DirectorNamedColorInspector.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\inspectors\AnimationPlayableAssetInspector.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Actions\TrackAction.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Utilities\Range.cs" />
@@ -230,9 +230,9 @@
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Activation\ActivationTrackInspector.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Manipulators\Utils\ManipulatorsUtils.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Extensions\AnimationTrackExtensions.cs" />
-     <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Window\WindowConstants.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Manipulators\EditMode.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\treeview\Snapping\ISnappable.cs" />
+     <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Window\WindowConstants.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\treeview\TimelineDataSource.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\CustomEditors\MarkerEditor.cs" />
      <Compile Include="Library\PackageCache\com.unity.timeline@1.4.8\Editor\Animation\AnimationOffsetMenu.cs" />
@@ -536,14 +536,29 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.collections@1.0.0-pre.5/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>

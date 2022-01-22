@@ -103,8 +103,8 @@
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Devices\InputDeviceMatcher.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\AssetEditor\InputActionAssetManager.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\EditorInputControlLayoutCache.cs" />
-     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\State\IInputStateTypeInfo.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\InputDiagnostics.cs" />
+     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\State\IInputStateTypeInfo.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Events\ActionEvent.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\Processors\ScaleProcessor.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\State\InputStateHistory.cs" />
@@ -269,10 +269,10 @@
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Utilities\DelegateHelpers.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\DiscreteButtonControl.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Plugins\Steam\SteamController.cs" />
-     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\TouchPhaseControl.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Internal\EditorHelpers.cs" />
-     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Utilities\TypeTable.cs" />
+     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\TouchPhaseControl.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\Processors\NormalizeVector3Processor.cs" />
+     <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Utilities\TypeTable.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\AxisControl.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Controls\Processors\ScaleVector2Processor.cs" />
      <Compile Include="Library\PackageCache\com.unity.inputsystem@1.0.2\InputSystem\Editor\Internal\AdvancedDropdown\MultiLevelDataSource.cs" />
@@ -569,14 +569,29 @@
     <Reference Include="UnityEditor.UWP.Extensions">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.collections@1.0.0-pre.5/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+        <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.burst@1.5.4/Unity.Burst.CodeGen/Unity.Burst.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.render-pipelines.core@10.5.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
         <HintPath>C:/Users/grumb/Documents/GitHub/FPSUnityDemo/FPSUnityDemo/Library/PackageCache/com.unity.nuget.mono-cecil@1.10.1/Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.9f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

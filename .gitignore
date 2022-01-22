@@ -2,3 +2,8 @@
 FPSUnityDemo/Library
 FPSUnityDemo/Temp
 *.log
+FPSUnityDemo/Assets/TextMesh Pro
+FPSUnityDemo/Assets/TextMesh Pro/**
+FPSUnityDemo/Assets/UltimateCleanGUIPack
+FPSUnityDemo/Assets/UltimateCleanGUIPack/**
+!FPSUnityDemo/Assets/UltimateCleanGUIPack/Common/Scripts/Core/PopupOpener.cs
