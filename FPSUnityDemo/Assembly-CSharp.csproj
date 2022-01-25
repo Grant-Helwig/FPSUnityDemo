@@ -36,6 +36,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Player\Weapon\DartPool.cs" />
      <Compile Include="Assets\Scripts\Player\States\SlidingState.cs" />
      <Compile Include="Assets\Scripts\Player\Weapon\Dart.cs" />
      <Compile Include="Assets\Scripts\Player\LimbGravity.cs" />
@@ -142,7 +143,7 @@
      <Compile Include="Assets\Scripts\Player\ActionStates\ShootState.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\SliderAmountText.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineSmoother.cs" />
-     <Compile Include="Assets\Scripts\Player\Weapon\DartPool.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkObjectPool.cs" />
      <None Include="Assets\UltimateCleanGUIPack\Themes\Round Dark\Fonts\FONTLOG.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Glass_Global.shader" />

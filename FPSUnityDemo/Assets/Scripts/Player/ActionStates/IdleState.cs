@@ -11,6 +11,7 @@ public class IdleState : State
     public override void Enter()
     {
         base.Enter();
+        character.SetDebugTextAction( "Idle");
     }
     public override void Exit()
     {
@@ -19,8 +20,8 @@ public class IdleState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        if(character.input_handler.is_grappling){
-
+        if(character.input_handler.is_reloading){
+            state_machine.ChangeState(character.reload_state);
         }
     }
     public override void LogicUpdate()

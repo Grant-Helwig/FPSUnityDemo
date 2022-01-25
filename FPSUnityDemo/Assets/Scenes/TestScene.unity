@@ -1057,8 +1057,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 752413507}
-  - component: {fileID: 752413506}
   - component: {fileID: 752413508}
+  - component: {fileID: 752413506}
   m_Layer: 0
   m_Name: NetworkDartPool
   m_TagString: Untagged
@@ -1075,10 +1075,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 752413505}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e25ffb6423a50d841a9573dd30474ca3, type: 3}
+  m_Script: {fileID: 11500000, guid: 34da14b9f62918d488bfd1b5fbec5d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dart: {fileID: 6596015971388010562, guid: 0ccfdd3e3fc417844bc005923bc12ae3, type: 3}
+  PooledPrefabsList:
+  - Prefab: {fileID: 6596015971388010562, guid: 0ccfdd3e3fc417844bc005923bc12ae3, type: 3}
+    PrewarmCount: 5
 --- !u!4 &752413507
 Transform:
   m_ObjectHideFlags: 0

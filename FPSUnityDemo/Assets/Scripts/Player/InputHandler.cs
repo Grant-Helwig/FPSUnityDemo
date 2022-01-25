@@ -6,6 +6,7 @@ using UnityEngine;
 public class InputHandler : MonoBehaviour
 {
     public bool is_jumping = false;
+    public bool is_reloading = false;
     public bool is_sliding;
     public bool is_sprinting;
     public bool is_grappling;
@@ -35,6 +36,10 @@ public class InputHandler : MonoBehaviour
 
     void OnJump(InputValue value){
         is_jumping = value.isPressed;
+    }
+
+    void OnReload(InputValue value){
+        is_reloading = value.isPressed;
     }
 
     void OnRagdoll(InputValue value){

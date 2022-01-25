@@ -56,11 +56,11 @@ public class DartPool : NetworkBehaviour
     private void RegisterPrefabInternal()
     {
         pool = new Queue<NetworkObject>();
-        for(int i = 0; i < 20; i++){
+        for(int i = 0; i < 3; i++){
             GameObject poolItem = Instantiate(dart);
             ReturnNetworkObject(poolItem);
         }
-        NetworkManager.Singleton.PrefabHandler.AddHandler(dart, new PooledPrefabInstanceHandler(dart, this));
+        //NetworkManager.Singleton.PrefabHandler.AddHandler(dart, new PooledPrefabInstanceHandler(dart, this));
     }
 
     /// <summary>
@@ -116,29 +116,31 @@ public class DartPool : NetworkBehaviour
 }
 
 //this is needed for the prefabhandler instance
-class PooledPrefabInstanceHandler : INetworkPrefabInstanceHandler
-    {
-        //this the 
-        GameObject m_Prefab;
-        DartPool m_Pool;
+// class PooledPrefabInstanceHandler : INetworkPrefabInstanceHandler
+//     {
+//         //this the 
+//         GameObject m_Prefab;
+//         DartPool m_Pool;
 
-        //sets the instance handler vars
-        public PooledPrefabInstanceHandler(GameObject prefab, DartPool pool)
-        {
-            m_Prefab = prefab;
-            m_Pool = pool;
-        }
+//         //sets the instance handler vars
+//         public PooledPrefabInstanceHandler(GameObject prefab, DartPool pool)
+//         {
+//             m_Prefab = prefab;
+//             m_Pool = pool;
+//         }
 
-        //instantiation will remove objects from the queue
-        NetworkObject INetworkPrefabInstanceHandler.Instantiate(ulong ownerClientId, Vector3 position, Quaternion rotation)
-        {
-            var netObject = m_Pool.GetNetworkObject(m_Prefab, position, rotation);
-            return netObject;
-        }
+//         //instantiation will remove objects from the queue
+//         NetworkObject INetworkPrefabInstanceHandler.Instantiate(ulong ownerClientId, Vector3 position, Quaternion rotation)
+//         {
+//             MonoBehaviour.print("get from the pool");
+//             var netObject = m_Pool.GetNetworkObject(m_Prefab, position, rotation);
+//             return netObject;
+//         }
 
-        //this brings it back to the queue
-        void INetworkPrefabInstanceHandler.Destroy(NetworkObject networkObject)
-        {
-            m_Pool.ReturnNetworkObject(m_Prefab);
-        }
-    }
+//         //this brings it back to the queue
+//         void INetworkPrefabInstanceHandler.Destroy(NetworkObject networkObject)
+//         {
+//             MonoBehaviour.print("return to the pool");
+//             m_Pool.ReturnNetworkObject(m_Prefab);
+//         }
+//     }

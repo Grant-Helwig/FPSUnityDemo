@@ -14,17 +14,21 @@ public class GrapplingState : State
         character.SetDebugText( "Grappling");
         if(!character.StartGrapple()){
             state_machine.ChangeState(state_machine.prev_state);
+            character.action_machine.ChangeState(character.action_machine.prev_state);
         } else {
             character.lastWallNormal = Vector3.zero;
             character.can_wall_run = true;
             character.SetAnimation(Anim.Falling);
+            character.action_machine.ChangeState(character.grapple_state);
         }
+        
     }
     public override void Exit()
     {
         base.Exit();
         character.tongue.SetActive(false);
         character.action_machine.ChangeState(character.idle_state);
+        character.UpdateTongueServerRpc(false);
     }
     public override void HandleInput()
     {

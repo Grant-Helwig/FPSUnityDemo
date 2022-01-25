@@ -12,6 +12,7 @@ public class GrappleState : State
     {
         base.Enter();
         character.DisbaleAimArm();
+        character.SetDebugTextAction( "Grapple");
     }
     public override void Exit()
     {

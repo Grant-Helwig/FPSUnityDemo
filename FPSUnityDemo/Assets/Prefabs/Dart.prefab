@@ -57,8 +57,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6596015971388010562}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.18837346, y: 0.27775857, z: 0.055640977, w: 0.9403562}
+  m_LocalPosition: {x: -8.999133, y: -17.31632, z: -14.349876}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children:
   - {fileID: 8672325347760130989}
@@ -93,19 +93,19 @@ MonoBehaviour:
   radius: 0.01
   root: {fileID: 6002833345857244076}
   tip: {fileID: 2517724753089557926}
-  maxLifeTime: 22.39
+  maxLifeTime: 5
   impactVFX: {fileID: 0}
   impactVFXLifetime: 5
   impactVFXSpawnOffset: 0.1
   impactSFXClip: {fileID: 0}
   hittableLayers:
     serializedVersion: 2
-    m_Bits: 1143
-  speed: 100
-  gravityDownAcceleration: 1
+    m_Bits: 3703
+  speed: 10
+  gravityDownAcceleration: 0
   trajectoryCorrectionDistance: 10
   inheritWeaponVelocity: 0
-  damage: 40
+  damage: 1
   radiusColor: {r: 0, g: 0.2, b: 0.2, a: 0.2}
 --- !u!114 &8329059929575422309
 MonoBehaviour:

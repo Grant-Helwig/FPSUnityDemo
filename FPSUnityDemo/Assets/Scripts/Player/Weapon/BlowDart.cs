@@ -1,6 +1,9 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
+using UltimateClean;
+using UnityEngine.UI;
 
 public enum WeaponShootType
 {
@@ -120,14 +123,18 @@ public class BlowDart : NetworkBehaviour
     public float currentCharge { get; private set; }
     public Vector3 muzzleWorldVelocity { get; private set; }
     public float GetAmmoNeededToShoot() => (shootType != WeaponShootType.Charge ? 1f : Mathf.Max(1f, ammoUsedOnStartCharge)) / (maxAmmo * bulletsPerShot);
-
+    float ammoCounter;
     AudioSource m_ShootAudioSource;
 
     const string k_AnimAttackParameter = "Attack";
+    public Vector3 shotDirection;
+    public SlicedFilledImage ammoBar;
+    public TextMeshProUGUI ammoText;
 
     void Awake()
     {
         m_CurrentAmmo = maxAmmo;
+        ammoText.text = m_CurrentAmmo.ToString();
         m_LastMuzzlePosition = weaponMuzzle.position;
 
         m_ShootAudioSource = GetComponent<AudioSource>();
@@ -143,11 +150,14 @@ public class BlowDart : NetworkBehaviour
 
     void Update()
     {
-        UpdateAmmo();
-        UpdateCharge();
-        UpdateContinuousShootSound();
-        //Debug.DrawLine();
-         Vector3 cameraToMuzzle = (weaponMuzzle.position - weaponCamera.transform.position);
+        //lets not update over time 
+        //UpdateAmmo();
+        
+        //lets not call this we probably wont use it
+        //UpdateCharge();
+        //UpdateContinuousShootSound();
+         
+        Vector3 cameraToMuzzle = (weaponMuzzle.position - weaponCamera.transform.position);
 
         var m_TrajectoryCorrectionVector = Vector3.ProjectOnPlane(-cameraToMuzzle, weaponCamera.transform.forward);
         Debug.DrawLine(weaponMuzzle.position, weaponMuzzle.position + m_TrajectoryCorrectionVector, Color.blue);
@@ -159,31 +169,27 @@ public class BlowDart : NetworkBehaviour
         }
     }
 
-    void UpdateAmmo()
+    public bool UpdateAmmo()
     {
-        if (m_LastTimeShot + ammoReloadDelay < Time.time && m_CurrentAmmo < maxAmmo && !isCharging)
-        {
-            // reloads weapon over time
-            m_CurrentAmmo += ammoReloadRate * Time.deltaTime;
+        print("updating ammo");
+        // reloads weapon over time
+        ammoCounter += ammoReloadRate * Time.deltaTime;
 
-            // limits ammo to max value
-            m_CurrentAmmo = Mathf.Clamp(m_CurrentAmmo, 0, maxAmmo);
+        // limits ammo to max value
+        ammoCounter = Mathf.Clamp(ammoCounter, 0, maxAmmo);
 
-            isCooling = true;
-        }
-        else
-        {
-            isCooling = false;
-        }
+        m_CurrentAmmo = Mathf.Floor(ammoCounter);
+        //set the ratio to the nearest whole number rounded down
+        currentAmmoRatio = m_CurrentAmmo  / maxAmmo;
 
-        if (maxAmmo == Mathf.Infinity)
-        {
-            currentAmmoRatio = 1f;
-        }
-        else
-        {
-            currentAmmoRatio = m_CurrentAmmo / maxAmmo;
-        }
+        ammoBar.fillAmount = currentAmmoRatio;
+        ammoText.text = m_CurrentAmmo.ToString();
+        if(m_CurrentAmmo.Equals(maxAmmo)) { return true;}
+        else { return false; }
+    }
+
+    public void ResetAmmoCounter(){
+        ammoCounter = m_CurrentAmmo;
     }
 
     void UpdateCharge()
@@ -303,7 +309,12 @@ public class BlowDart : NetworkBehaviour
         {
             HandleShoot();
             m_CurrentAmmo -= 1f;
+            ammoCounter = m_CurrentAmmo;
+            //added this here since I removed the continuous logic 
+            currentAmmoRatio = m_CurrentAmmo / maxAmmo;
 
+            ammoBar.fillAmount = currentAmmoRatio;
+            ammoText.text = m_CurrentAmmo.ToString();
             return true;
         }
 
@@ -328,6 +339,11 @@ public class BlowDart : NetworkBehaviour
         return false;
     }
 
+    public void Reload(){
+        m_CurrentAmmo = maxAmmo;
+        currentAmmoRatio = 1;
+    }
+
     bool TryReleaseCharge()
     {
         if (isCharging)
@@ -349,20 +365,25 @@ public class BlowDart : NetworkBehaviour
         // spawn all bullets with random direction
         for (int i = 0; i < bulletsPerShotFinal; i++)
         {
-            Vector3 shotDirection = GetShotDirectionWithinSpread(weaponMuzzle);
-            if(IsServer){
-                GameObject go = DartPool.instance.GetNetworkObject(projectilePrefabGameObject, weaponMuzzle.position, Quaternion.LookRotation(shotDirection)).gameObject;
+            shotDirection = GetShotDirectionWithinSpread(weaponMuzzle);
+            //if(IsServer){
+                GameObject go = NetworkObjectPool.Singleton.GetNetworkObject(projectilePrefabGameObject, weaponMuzzle.position, Quaternion.LookRotation(shotDirection)).gameObject;
             
                 //DartPool.instance.Instantiate(OwnerClientId,weaponMuzzle.position, Quaternion.LookRotation(shotDirection) );
-                go.GetComponent<NetworkObject>().Spawn();
+                //if(!go.GetComponent<NetworkObject>().IsSpawned ){//&& IsServer){
+                 //   go.GetComponent<NetworkObject>().Spawn();
+                //}
+                go.GetComponent<NetworkObject>().Spawn(true);
+                //go.transform.position = weaponMuzzle.position;
+
                 go.GetComponent<ProjectileBase>().Shoot(this);
-            } else {
-                GameObject go = DartPool.instance.GetNetworkObject(projectilePrefabGameObject, weaponMuzzle.position, Quaternion.LookRotation(shotDirection)).gameObject;
+            //} else {
+             //   GameObject go = DartPool.instance.GetNetworkObject(projectilePrefabGameObject, weaponMuzzle.position, Quaternion.LookRotation(shotDirection)).gameObject;
             
                 //DartPool.instance.Instantiate(OwnerClientId,weaponMuzzle.position, Quaternion.LookRotation(shotDirection) );
                 // go.GetComponent<NetworkObject>().Spawn();
-                go.GetComponent<ProjectileBase>().Shoot(this);
-            }
+              //  go.GetComponent<ProjectileBase>().Shoot(this);
+           // }
             
             
             

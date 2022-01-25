@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(ProjectileBase))]
-public class Dart : MonoBehaviour
+public class Dart : NetworkBehaviour
 {
     [Header("General")]
     [Tooltip("Radius of this projectile's collision detection")]
@@ -62,14 +63,25 @@ public class Dart : MonoBehaviour
     {
         m_ProjectileBase = GetComponent<ProjectileBase>();
         //DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ProjectileStandard>(m_ProjectileBase, this, gameObject);
-        print("we enabled the bullet");
+        //print("we enabled the bullet");
         m_ProjectileBase.onShoot += OnShoot;
         //Destroy(gameObject, maxLifeTime);
     }
 
+    private void OnDisable() {
+        //m_ShootTime = Time.time;
+        //shotTimer = 0;
+        // m_LastRootPosition = root.position;
+        // transform.forward = m_ProjectileBase.weaponCamera.transform.forward;
+        // m_Velocity = transform.forward * speed;
+        // currentLookAt = m_ProjectileBase.lookAt.position;
+        // m_IgnoredColliders = new List<Collider>();
+        // transform.position += m_ProjectileBase.inheritedMuzzleVelocity * Time.deltaTime;
+    }
+
     void OnShoot()
     {
-        m_ShootTime = Time.time;
+        m_ShootTime = 0;
         //shotTimer = 0;
         m_LastRootPosition = root.position;
         transform.forward = m_ProjectileBase.weaponCamera.transform.forward;
@@ -78,7 +90,8 @@ public class Dart : MonoBehaviour
         m_IgnoredColliders = new List<Collider>();
         transform.position += m_ProjectileBase.inheritedMuzzleVelocity * Time.deltaTime;
 
-        
+        m_ConsumedTrajectoryCorrectionVector = Vector3.zero;
+        m_ShootTime = 0;
         // Ignore colliders of owner
         // Collider[] ownerColliders = m_ProjectileBase.owner.GetComponentsInChildren<Collider>();
         // m_IgnoredColliders.AddRange(ownerColliders);
@@ -124,7 +137,9 @@ public class Dart : MonoBehaviour
 
     void Update()
     {
+        //if(!gameObject.activeSelf){return;}
         //shotTimer += Time.deltaTime;
+        m_ShootTime += Time.deltaTime;
         // Move
         transform.position += m_Velocity * Time.deltaTime;
         if (inheritWeaponVelocity){
@@ -133,7 +148,7 @@ public class Dart : MonoBehaviour
         // Drift towards trajectory override (this is so that projectiles can be centered 
         // with the camera center even though the actual weapon is offset)
         if (m_HasTrajectoryOverride && m_ConsumedTrajectoryCorrectionVector.sqrMagnitude < m_TrajectoryCorrectionVector.sqrMagnitude){
-            print("correcting");
+            //print("correcting");
 
             Vector3 correctionLeft = m_TrajectoryCorrectionVector - m_ConsumedTrajectoryCorrectionVector;
             float distanceThisFrame = (root.position - m_LastRootPosition).magnitude;
@@ -152,7 +167,9 @@ public class Dart : MonoBehaviour
         if(m_HasTrajectoryOverride){
 
         } else {
-            transform.forward = m_Velocity.normalized;
+            if(m_Velocity != Vector3.zero){
+                transform.forward = m_Velocity.normalized;
+            }
         }
         
 
@@ -201,6 +218,14 @@ public class Dart : MonoBehaviour
         //if(shotTimer > maxLifeTime){
             
         //}
+        if((m_ShootTime > maxLifeTime) && NetworkManager.Singleton.IsServer && NetworkObject.IsSpawned){
+            m_ConsumedTrajectoryCorrectionVector = Vector3.zero;
+            m_ShootTime = 0;
+            //DartPool.instance.ReturnNetworkObject(gameObject);
+            //NetworkObject.Despawn(true);
+            MonoBehaviour.print("dart timeout");
+            DestroyDart();
+        }
     }
 
     bool IsHitValid(RaycastHit hit)
@@ -226,8 +251,22 @@ public class Dart : MonoBehaviour
         return true;
     }
 
+    private void DestroyDart()
+    {
+        if (!NetworkObject.IsSpawned)
+        {
+            return;
+        }
+
+        NetworkObject.Despawn(true);
+    }
+
     void OnHit(Vector3 point, Vector3 normal, Collider collider)
     { 
+        if (!NetworkManager.Singleton.IsServer || !NetworkObject.IsSpawned)
+        {
+            return;
+        }
         // damage
         // if (areaOfDamage)
         // {
@@ -245,7 +284,7 @@ public class Dart : MonoBehaviour
         // }
 
         // impact vfx
-        print("bang bang");
+        //print("bang bang");
         if (impactVFX)
         {
             GameObject impactVFXInstance = Instantiate(impactVFX, point + (normal * impactVFXSpawnOffset), Quaternion.LookRotation(normal));
@@ -262,7 +301,18 @@ public class Dart : MonoBehaviour
         // }
 
         // Self Destruct
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+
+        Character damageable = collider.gameObject.GetComponentInParent<Character>();
+        print(collider.gameObject.layer + " | " + collider.gameObject.name);
+        if (damageable){
+            MonoBehaviour.print("hit enemy");
+            damageable.InflictDamage(damage);
+        }
+        m_ConsumedTrajectoryCorrectionVector = Vector3.zero;
+        m_ShootTime = 0;
+        //DartPool.instance.ReturnNetworkObject(gameObject);
+        DestroyDart();
     }
 
     private void OnDrawGizmosSelected()

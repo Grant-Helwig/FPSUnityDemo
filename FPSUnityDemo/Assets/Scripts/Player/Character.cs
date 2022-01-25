@@ -307,6 +307,11 @@ public class Character : NetworkBehaviour
     [SerializeField]
     public Text debug_text;
     [SerializeField]
+    public Text debug_text_action;
+
+    [SerializeField]
+    public Text player_health_box;
+    [SerializeField]
     public Text debug_speed;
     public bool stopGrapple = false;
     private float setGrappleDistance = 0f;
@@ -326,8 +331,13 @@ public class Character : NetworkBehaviour
     public NetworkVariable<Vector3> cameraRotation;
     public NetworkVariable<Vector3> hipPos;
     public NetworkVariable<bool> crouchActive;
+    public NetworkVariable<bool> tongueActive;
+
     [SerializeField]
-    private BlowDart blowDart;
+    public BlowDart blowDart;
+    [SerializeField]
+    private NetworkVariable<float> playerHealth;
+    private float lastHealth;
     void UpdateMouseLook(){
       
       //get a simple vector 2 for the mouse delta 
@@ -821,6 +831,12 @@ public class Character : NetworkBehaviour
         debug_text.text = t;
       }
     }
+
+    public void SetDebugTextAction(string t){
+      if(debug_text_action != null){
+        debug_text_action.text = t;
+      }
+    }
     public void SnapToGround(){
       if(character_collisions.ground_hit.distance > controller.skinWidth){
         controller.Move(Vector3.down * character_collisions.ground_hit.distance);
@@ -840,7 +856,7 @@ public class Character : NetworkBehaviour
       !GrappleCooldownTimer.is_active){
        stopGrapple = false;
         movement_machine.ChangeState(grappling_state);
-        action_machine.ChangeState(grapple_state);
+        UpdateTongueServerRpc(true);
       }
     }
     void OnGrappleUp(){
@@ -851,10 +867,16 @@ public class Character : NetworkBehaviour
     }
 
     void OnShootDown(){
-      blowDart.HandleShootInputs(true, false, false);
+      //blowDart.HandleShootInputs(true, false, false);
+      if(IsClient && action_machine.cur_state != reload_state){
+      ShootDartServerRpc(true, false, false);
+      }
     }
     void OnShootUp(){
-      blowDart.HandleShootInputs(false, false, true);
+      //blowDart.HandleShootInputs(false, false, true);
+      if(IsClient){
+      ShootDartServerRpc(false, false, true);
+      }
     }
 
     public void SetAnimation(Anim index){
@@ -919,6 +941,20 @@ public class Character : NetworkBehaviour
       }
     }
 
+    public void InflictDamage(float damage){
+      MonoBehaviour.print("inflict dame pre rpc");
+      UpdateClientHealthServerRpc(playerHealth.Value - damage);
+      //if(!IsLocalPlayer){
+        player_health_box.text = playerHealth.Value.ToString();
+      //}
+    }
+
+
+    [ServerRpc (RequireOwnership = false)]
+    private void UpdateClientHealthServerRpc(float health)
+    {
+        playerHealth.Value = health;
+    }
     [ServerRpc]
     private void UpdateClientPositionServerRpc()
     {
@@ -926,7 +962,7 @@ public class Character : NetworkBehaviour
         controller.Move(playerPos.Value * Time.fixedDeltaTime);
     }
 
-    [ServerRpc]
+    [ServerRpc (RequireOwnership = false)]
     private void UpdatePlayerStateServerRpc(Anim animState)
     {
         netowrkAnimationState.Value = animState;
@@ -948,6 +984,17 @@ public class Character : NetworkBehaviour
     private void UpdateCrouchingServerRpc(bool toggle)
     {
         crouchActive.Value = toggle;
+    }
+    [ServerRpc]
+    private void ShootDartServerRpc(bool inputDown, bool inputHeld, bool inputUp)
+    {
+        blowDart.HandleShootInputs(inputDown, inputHeld, inputUp);
+    }
+
+    [ServerRpc]
+    public void UpdateTongueServerRpc(bool toggle)
+    {
+        tongueActive.Value = toggle;
     }
 
     private void Awake() {
@@ -1023,8 +1070,12 @@ public class Character : NetworkBehaviour
         Cursor.visible = false;
       }
       var camera = FPCameraObject.GetComponent<Camera>();
+
+      lastHealth = playerHealth.Value;
       if((IsOwner)|| SceneManager.GetActiveScene().name.Equals("SampleScene")){
         gameObject.GetComponent<PlayerInput>().actions = inputAsset;
+        player_health_box.text = 5f.ToString();
+        UpdateClientHealthServerRpc(5);
         //gameObject.GetComponent<PlayerInput>().
         //gameObject.GetComponent<InputHandler>().enabled = true;
         // input_handler = gameObject.AddComponent<InputHandler>();
@@ -1036,8 +1087,9 @@ public class Character : NetworkBehaviour
         //FPCameraObject.SetActive(false);
         gameObject.GetComponent<PlayerInput>().DeactivateInput();
         //gameObject.GetComponent<InputHandler>().enabled = false;
-        objectThirdPerson.layer = LayerMask.NameToLayer("FPS");
-        SetLayerRecursively(objectThirdPerson, "FPS");
+        SetLayerRecursively(gameObject, "EnemyPlayer");
+        //objectThirdPerson.layer = LayerMask.NameToLayer("FPS");
+        //SetLayerRecursively(objectThirdPerson, "FPS");
         FPCameraObject.GetComponent<Camera>().enabled = false;
         FPCameraObject.GetComponent<AudioListener>().enabled = false;
         FPSArms.enabled = false;
@@ -1096,6 +1148,10 @@ public class Character : NetworkBehaviour
       action_machine.cur_state.HandleInput();
       action_machine.cur_state.LogicUpdate();
 
+      if(lastHealth != playerHealth.Value){
+        lastHealth = playerHealth.Value;
+        player_health_box.text = playerHealth.Value.ToString();
+      }
       } else {
         animatorThirdPerson.SetInteger("Change", ((int)netowrkAnimationState.Value));
         FPCamera.localEulerAngles = cameraRotation.Value;
@@ -1107,6 +1163,15 @@ public class Character : NetworkBehaviour
         }
         
         hipIK.transform.localPosition = hipPos.Value;
+        if(tongueActive.Value){
+          if(!tongue.activeSelf){
+            //tongue.SetActive(true);
+            StartGrapple();
+          }
+          SetTongue();
+        } else if(tongue.activeSelf ){
+          tongue.SetActive(false);
+        }
         // if( standingHips.localPosition.y - hipPos.Value.y > 2){
         //   hipIK.GetComponent<OffsetModifier>().enabled = true;
         // } else {
@@ -1148,7 +1213,7 @@ public class Character : NetworkBehaviour
       action_machine.cur_state.PhysicsUpdate();
 
       //reticle always updating
-      ReticleBloom(false);
+      //ReticleBloom(false);
 
         //uses the movement calculated by the current state 
         controller.Move(velocity * Time.fixedDeltaTime);
