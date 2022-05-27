@@ -44,6 +44,7 @@
      <Compile Include="Assets\Scripts\Network\PlayerData.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Extra\MusicButton.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenuUI.cs" />
+     <Compile Include="Assets\Scripts\Network\NetworkObjectPool.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Extra\MusicManager.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\URLOpener.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\LoopableSelectionSlider.cs" />
@@ -74,11 +75,13 @@
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\ButtonSounds.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Utils\UOUtility.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleFollowSpline.cs" />
+     <Compile Include="Assets\Scripts\Player\ServerCharacter.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\ProgressBarAnimation.cs" />
      <Compile Include="Assets\Scripts\Player\Weapon\ProjectileBase.cs" />
      <Compile Include="Assets\Scripts\Network\ClientGameNetPortal.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleContortAlong.cs" />
      <Compile Include="Assets\Scripts\Player\ThirdPersonIKSolver.cs" />
+     <Compile Include="Assets\Scripts\Player\CharacterIK.cs" />
      <Compile Include="Assets\Scripts\Network\ConnectStatus.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Utils\MeshUtility.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\NotificationType.cs" />
@@ -138,12 +141,14 @@
      <Compile Include="Assets\Scripts\Player\ActionStates\GrappleState.cs" />
      <Compile Include="Assets\Scripts\UI\LobbyUI.cs" />
      <Compile Include="Assets\Scripts\Player\CharacterCollisions.cs" />
+     <Compile Include="Assets\Scripts\Player\ClientCharacter.cs" />
      <Compile Include="Assets\Scripts\Player\InputHandler.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Extra\SoundButton.cs" />
      <Compile Include="Assets\Scripts\Player\ActionStates\ShootState.cs" />
      <Compile Include="Assets\UltimateCleanGUIPack\Common\Scripts\Core\SliderAmountText.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineSmoother.cs" />
-     <Compile Include="Assets\Scripts\Network\NetworkObjectPool.cs" />
+     <Compile Include="Assets\Scripts\Network\RoundPlayerState.cs" />
+     <Compile Include="Assets\Scripts\Network\RoundCounter.cs" />
      <None Include="Assets\UltimateCleanGUIPack\Themes\Round Dark\Fonts\FONTLOG.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\PolygonPrototype\Shaders\Prototype_Glass_Global.shader" />

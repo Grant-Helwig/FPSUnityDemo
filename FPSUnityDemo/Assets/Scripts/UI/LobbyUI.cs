@@ -149,7 +149,6 @@ public class LobbyUI : NetworkBehaviour
                 lobbyPlayerCards[i].DisableDisplay();
             }
         }
-
         if(IsHost){
             startGameButton.interactable = IsEveryoneReady();
         }

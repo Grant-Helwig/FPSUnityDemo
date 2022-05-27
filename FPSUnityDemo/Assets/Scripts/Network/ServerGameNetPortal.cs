@@ -22,6 +22,7 @@ public class ServerGameNetPortal : MonoBehaviour
     private const int MaxConnectionPayload = 1024;
 
     private GameNetPortal gameNetPortal;
+    private int m_numberOfClientLoaded;
 
     private void Awake()
     {
@@ -89,10 +90,23 @@ public class ServerGameNetPortal : MonoBehaviour
     public void StartGame()
     {
         gameInProgress = true;
-
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
         NetworkManager.Singleton.SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
     }
 
+    private void OnSceneEvent(SceneEvent sceneEvent)
+    {
+        //We are only interested by Client Loaded Scene events
+        if (sceneEvent.SceneEventType != SceneEventType.LoadComplete) return;
+
+        m_numberOfClientLoaded += 1;
+        //OnClientLoadedScene?.Invoke(sceneEvent.ClientId);
+    }
+
+    public bool AllClientsAreLoaded()
+    {
+        return m_numberOfClientLoaded == NetworkManager.Singleton.ConnectedClients.Count;
+    }
     public void EndRound()
     {
         gameInProgress = false;

@@ -192,6 +192,10 @@ public class BlowDart : NetworkBehaviour
         ammoCounter = m_CurrentAmmo;
     }
 
+    public void FillAmmoCounter(){
+        ammoCounter = maxAmmo;
+    }
+
     void UpdateCharge()
     {
         if (isCharging)
@@ -266,7 +270,7 @@ public class BlowDart : NetworkBehaviour
         m_LastTimeShot = Time.time;
     }
 
-    public bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
+    public bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp )
     {
         m_wantsToShoot = inputDown || inputHeld;
         switch (shootType)
@@ -307,7 +311,8 @@ public class BlowDart : NetworkBehaviour
         if (m_CurrentAmmo >= 1f 
             && m_LastTimeShot + delayBetweenShots < Time.time)
         {
-            HandleShoot();
+            MonoBehaviour.print("shoots");
+            //HandleShoot();
             m_CurrentAmmo -= 1f;
             ammoCounter = m_CurrentAmmo;
             //added this here since I removed the continuous logic 
@@ -348,6 +353,7 @@ public class BlowDart : NetworkBehaviour
     {
         if (isCharging)
         {
+            MonoBehaviour.print("charged shoot");
             HandleShoot();
 
             currentCharge = 0f;
@@ -358,7 +364,7 @@ public class BlowDart : NetworkBehaviour
         return false;
     }
 
-    void HandleShoot()
+    public void HandleShoot()
     {
         int bulletsPerShotFinal = shootType == WeaponShootType.Charge ? Mathf.CeilToInt(currentCharge * bulletsPerShot) : bulletsPerShot;
         

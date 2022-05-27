@@ -9,6 +9,7 @@ using Unity.Netcode.Samples;
 using Unity.Netcode.Components;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Events;
 
 [SelectionBase]
 public class Character : NetworkBehaviour
@@ -308,7 +309,6 @@ public class Character : NetworkBehaviour
     public Text debug_text;
     [SerializeField]
     public Text debug_text_action;
-
     [SerializeField]
     public Text player_health_box;
     [SerializeField]
@@ -338,6 +338,7 @@ public class Character : NetworkBehaviour
     [SerializeField]
     private NetworkVariable<float> playerHealth;
     private float lastHealth;
+    public UnityEvent deathEvent;
     void UpdateMouseLook(){
       
       //get a simple vector 2 for the mouse delta 
@@ -869,13 +870,15 @@ public class Character : NetworkBehaviour
     void OnShootDown(){
       //blowDart.HandleShootInputs(true, false, false);
       if(IsClient && action_machine.cur_state != reload_state){
-      ShootDartServerRpc(true, false, false);
+        if(blowDart.HandleShootInputs(true, false, false)){
+          ShootDartServerRpc();
+        }
       }
     }
     void OnShootUp(){
       //blowDart.HandleShootInputs(false, false, true);
       if(IsClient){
-      ShootDartServerRpc(false, false, true);
+      //ShootDartServerRpc(false, false, true);
       }
     }
 
@@ -944,11 +947,17 @@ public class Character : NetworkBehaviour
     public void InflictDamage(float damage){
       MonoBehaviour.print("inflict dame pre rpc");
       UpdateClientHealthServerRpc(playerHealth.Value - damage);
-      //if(!IsLocalPlayer){
-        player_health_box.text = playerHealth.Value.ToString();
-      //}
+      player_health_box.text = playerHealth.Value.ToString();
+      if(playerHealth.Value <=0 ){
+        GameObject.Find("RoundSystem").GetComponent<RoundSystem>().playerDeath();
+      }
     }
 
+
+    public void ResetStats(){
+      blowDart.FillAmmoCounter();
+      UpdateClientHealthServerRpc(5);
+    }
 
     [ServerRpc (RequireOwnership = false)]
     private void UpdateClientHealthServerRpc(float health)
@@ -986,9 +995,10 @@ public class Character : NetworkBehaviour
         crouchActive.Value = toggle;
     }
     [ServerRpc]
-    private void ShootDartServerRpc(bool inputDown, bool inputHeld, bool inputUp)
+    private void ShootDartServerRpc()
     {
-        blowDart.HandleShootInputs(inputDown, inputHeld, inputUp);
+      MonoBehaviour.print("shoot server rpc");
+        blowDart.HandleShoot();
     }
 
     [ServerRpc]
@@ -1072,17 +1082,11 @@ public class Character : NetworkBehaviour
       var camera = FPCameraObject.GetComponent<Camera>();
 
       lastHealth = playerHealth.Value;
-      if((IsOwner)|| SceneManager.GetActiveScene().name.Equals("SampleScene")){
+      if((IsLocalPlayer)|| SceneManager.GetActiveScene().name.Equals("SampleScene")){
+        gameObject.GetComponent<PlayerInput>().DeactivateInput();
         gameObject.GetComponent<PlayerInput>().actions = inputAsset;
         player_health_box.text = 5f.ToString();
         UpdateClientHealthServerRpc(5);
-        //gameObject.GetComponent<PlayerInput>().
-        //gameObject.GetComponent<InputHandler>().enabled = true;
-        // input_handler = gameObject.AddComponent<InputHandler>();
-        // input_handler.UICamera = UICamera;
-        // input_handler.PlayerCamera = PlayerCamera;
-        //gameObject.GetComponent<PlayerInputManager>().enabled = true;
-  
       } else {
         //FPCameraObject.SetActive(false);
         gameObject.GetComponent<PlayerInput>().DeactivateInput();
@@ -1096,12 +1100,6 @@ public class Character : NetworkBehaviour
         FPSBlowDart.enabled = false;
         //gameObject.GetComponent<PlayerInputManager>().enabled = false;
       }
-
-      // if(IsLocalPlayer){
-      //   gameObject.AddComponent<ClientNetworkTransform>();
-      // } else {
-      //   gameObject.AddComponent<NetworkTransform>();
-      // }
     }
 
     void SetLayerRecursively(GameObject obj, string newLayer)
@@ -1127,17 +1125,11 @@ public class Character : NetworkBehaviour
       if(IsLocalPlayer || SceneManager.GetActiveScene().name.Equals("SampleScene")){
       //always update aiming
       UpdateMouseLook();
+
       if(!jumpCooldownTimer.is_active && !wallJumpCooldownTimer.is_active){
         can_jump = JumpBuffer();
       }
 
-      // //temporary handlers for grapple and ragdoll state, need to be stripped out later 
-      // if(input_handler.is_grappling){
-      //   if(movement_machine.cur_state != grappling_state){
-      //     movement_machine.ChangeState(grappling_state);
-      //   }
-      // } 
-      
       if(input_handler.is_ragdoll){
         movement_machine.ChangeState(ragdoll_state);
       }
@@ -1223,10 +1215,6 @@ public class Character : NetworkBehaviour
           debug_speed.text =  ((int)(((new Vector3(velocity.x, 0 , velocity.z).magnitude / 1000) * 60) * 60)).ToString();
         }
         //print(Vector3.Dot(input_direction, character_collisions.last_wall_normal) + " | " +input_direction + " | " +  character_collisions.last_wall_normal);
-      }
-
-      if(IsServer){
-        UpdateServer();
       }
     }
 }
