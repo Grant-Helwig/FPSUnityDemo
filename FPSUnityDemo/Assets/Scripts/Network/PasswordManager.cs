@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using System;
 using System.Text;
 
@@ -20,7 +21,8 @@ public class PasswordManager : MonoBehaviour
     [SerializeField]
     private GameObject MenuCamera;
 
-    private void Start() {
+    private void Start()
+    {
 
         passwordPopup = GetComponent<UltimateClean.PopupOpener>().m_popup;
         //called when server is started
@@ -28,41 +30,49 @@ public class PasswordManager : MonoBehaviour
 
         //called when clients connect
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        
+
         //called when clients leave
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleCleintDisconnected;    
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandleCleintDisconnected;
     }
 
-    private void OnDestroy() {
-        if(NetworkManager.Singleton == null){
+    private void OnDestroy()
+    {
+        if (NetworkManager.Singleton == null)
+        {
             return;
         }
 
         NetworkManager.Singleton.OnServerStarted -= HandleServerStarted;
         NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleCleintDisconnected;    
+        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleCleintDisconnected;
     }
-    public void host(){
+    public void host()
+    {
         //set the approval check
-        NetworkManager.Singleton.ConnectionApprovalCallback+= ApprovalCheck;
+        NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
 
         //start host
         NetworkManager.Singleton.StartHost();
     }
 
-    public void join(){
+    public void join()
+    {
         //send in the password input as bytes
         NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes(password.text);
-        
+
         //start client
         NetworkManager.Singleton.StartClient();
     }
 
-    public void leave(){
-        if(NetworkManager.Singleton.IsHost){
+    public void leave()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
             NetworkManager.Singleton.Shutdown();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
-        } else if (NetworkManager.Singleton.IsClient){
+        }
+        else if (NetworkManager.Singleton.IsClient)
+        {
             NetworkManager.Singleton.DisconnectClient(NetworkManager.Singleton.LocalClientId);
         }
     }
@@ -82,7 +92,8 @@ public class PasswordManager : MonoBehaviour
     private void HandleServerStarted()
     {
         //if we are hosting then we need to update UI too
-        if(NetworkManager.Singleton.IsHost){
+        if (NetworkManager.Singleton.IsHost)
+        {
             HandleClientConnected(NetworkManager.Singleton.LocalClientId);
         }
     }
@@ -90,7 +101,8 @@ public class PasswordManager : MonoBehaviour
     private void HandleCleintDisconnected(ulong clientID)
     {
         //check if we are the host 
-        if(clientID == NetworkManager.Singleton.LocalClientId){
+        if (clientID == NetworkManager.Singleton.LocalClientId)
+        {
             print("we have left");
             //passwordPopup.SetActive(true);
             leaveButton.SetActive(false);
@@ -101,13 +113,17 @@ public class PasswordManager : MonoBehaviour
     private void HandleClientConnected(ulong clientID)
     {
         //check if we are the host 
-        if(clientID == NetworkManager.Singleton.LocalClientId){
+        if (clientID == NetworkManager.Singleton.LocalClientId)
+        {
             print("we have joined");
             //passwordPopup.SetActive(false);
             passwordPopup = GetComponent<UltimateClean.PopupOpener>().m_popup;
-            if(passwordPopup != null){
+            if (passwordPopup != null)
+            {
                 passwordPopup.GetComponent<UltimateClean.Popup>().Close();
-            } else {
+            }
+            else
+            {
                 print("no popup");
             }
             leaveButton.SetActive(true);
